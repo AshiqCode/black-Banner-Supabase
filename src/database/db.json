@@ -1,0 +1,256 @@
+{
+  "users": [
+    {
+      "id": "9588",
+      "Name": "Elit qui ",
+      "Email": "kutegu@mailinator.com",
+      "Password": "Rerum est hic natus",
+      "type": "admin"
+    },
+    {
+      "id": "4fca",
+      "Name": "Dolore ",
+      "Email": "bihon@mailinator.com",
+      "Password": "Aut enim mollit null",
+      "type": "admin"
+    },
+    {
+      "id": "e512",
+      "Name": "Recusandae Deleniti",
+      "Email": "hyxuno@mailinator.com",
+      "Password": "Itaque nulla aliquid",
+      "type": "admin"
+    },
+    {
+      "id": "6d07",
+      "Name": "a",
+      "Email": "a",
+      "Password": "a",
+      "type": "admin",
+      "cart": [
+        {
+          "id": "6a8d",
+          "Quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "47d9",
+      "Name": "Totam consectetur q",
+      "Email": "vedygalup@mailinator.com",
+      "Password": "Rem vero ea sequi pa",
+      "type": "admin"
+    },
+    {
+      "id": "9837",
+      "Name": "Ex elit commodi sae",
+      "Email": "hyxuno@mailinator.com",
+      "Password": "Nihil iusto eu volup",
+      "type": "admin"
+    },
+    {
+      "id": "3434",
+      "Name": "Dolore",
+      "Email": "wupexeg@mailinator.com",
+      "Password": "Dolore itaque tempor",
+      "type": "admin"
+    },
+    {
+      "id": "4f57",
+      "Name": "Soluta ducimus iste",
+      "Email": "Eiusmod tempor qui a",
+      "Password": "Qui cupiditate qui n"
+    },
+    {
+      "id": "c8a2",
+      "Name": "z",
+      "Email": "z",
+      "Password": "z"
+    },
+    {
+      "id": "7f65",
+      "Name": "In anim ipsa vel of",
+      "Email": "Nam laborum Tempore",
+      "Password": "Labore est et ad off"
+    },
+    {
+      "id": "6d0b",
+      "Name": "Facilis inventore al",
+      "Email": "Similique quis rerum",
+      "Password": "Quia dolore nostrum "
+    },
+    {
+      "Name": "q",
+      "Email": "q",
+      "Password": "q",
+      "Number": "25",
+      "Province": "Labore aut delectus",
+      "City": "Explicabo Voluptate",
+      "Street": "Minus aliquip enim v",
+      "Address": "Quo voluptate labore",
+      "id": "f49f",
+      "cart": []
+    },
+    {
+      "id": "8203",
+      "Name": "Molestiae qui ut odi",
+      "Email": "nuboceze@mailinato",
+      "Password": "Doloremque impedit ",
+      "type": "admin"
+    },
+    {
+      "id": "aa86",
+      "Name": "Sit et alias proide",
+      "Email": "tagakuri",
+      "Password": "Ad sunt quam ut dolo",
+      "type": "admin"
+    },
+    {
+      "id": "8957",
+      "Name": "Sit et alias proide",
+      "Email": "tagakuri",
+      "Password": "Ad sunt quam ut dolo",
+      "type": "admin"
+    },
+    {
+      "id": "683d",
+      "Name": "Sit et alias proide",
+      "Email": "tagakuri",
+      "Password": "Ad sunt quam ut dolo",
+      "type": "admin"
+    },
+    {
+      "Name": "p",
+      "Email": "p",
+      "Password": "p",
+      "Number": "6",
+      "Province": "Et consequatur omnis",
+      "City": "Ratione laudantium ",
+      "Street": "Odio facere qui ut n",
+      "Address": "Libero sint adipisci",
+      "id": "4947"
+    }
+  ],
+  "products": [
+    {
+      "Name": "Dolor dicta nostrum ",
+      "price": 70,
+      "Description": "Eiusmod optio eum n",
+      "image": "https://img.freepik.com/free-vector/girl-choosing-…ams-lotions-taking-shampoo-bottle_74855-10674.jpg",
+      "Category": "books",
+      "StockQuantity": 0,
+      "id": "1bee"
+    },
+    {
+      "Name": "Ea aute cillum id au",
+      "price": 32,
+      "Description": "Repellendus Pariatu",
+      "image": "https://img.freepik.com/free-photo/flat-lay-natura…tion_23-2148990019.jpg?semt=ais_hybrid&w=740&q=80",
+      "Category": "fashion",
+      "StockQuantity": 5,
+      "id": "6a8d",
+      "reviews": [
+        {
+          "userId": "4947",
+          "rating": 3,
+          "reviewMessage": "Esse accusamus quis Overall it’s okay. Some features are useful, but there’s still room for improvement.\n",
+          "orderId": "e671"
+        },
+        {
+          "userId": "f49f",
+          "rating": 3,
+          "reviewMessage": "Overall it’s okay. Some features are useful, but there’s still room for improvement.\n",
+          "orderId": "afa9"
+        }
+      ]
+    },
+    {
+      "id": "216c",
+      "Name": "Voluptate laborum si",
+      "price": 93,
+      "Description": "Corrupti nihil nisi",
+      "image": "https://img.freepik.com/premium-photo/open-laptop-with-black-screen-against-black-background_93675-167043.jpg",
+      "Category": "fashion",
+      "StockQuantity": 91
+    },
+    {
+      "id": "2c27",
+      "Name": "Voluptate laborum si",
+      "price": 93,
+      "Description": "Corrupti nihil nisi",
+      "image": "https://img.freepik.com/premium-photo/open-laptop-with-black-screen-against-black-background_93675-167043.jpg",
+      "Category": "fashion",
+      "StockQuantity": 91
+    }
+  ],
+  "orders": [
+    {
+      "id": "afa9",
+      "products": [
+        {
+          "id": "6a8d",
+          "quantity": 1
+        },
+        {
+          "id": "2c27",
+          "quantity": 1
+        },
+        {
+          "id": "216c",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 185,
+      "shipping": 12,
+      "total": 203,
+      "deliveryAddress": "Labore aut delectusExplicabo VoluptateMinus aliquip enim vQuo voluptate labore",
+      "status": "delivered",
+      "userId": "f49f"
+    },
+    {
+      "id": "7f13",
+      "products": [
+        {
+          "id": "6a8d",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 32,
+      "shipping": 4,
+      "total": 38,
+      "deliveryAddress": "Labore aut delectusExplicabo VoluptateMinus aliquip enim vQuo voluptate labore",
+      "status": "canceled",
+      "userId": "f49f"
+    },
+    {
+      "id": "aec8",
+      "products": [
+        {
+          "id": "216c",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 60,
+      "shipping": 4,
+      "total": 66,
+      "deliveryAddress": "Labore aut delectusExplicabo VoluptateMinus aliquip enim vQuo voluptate labore",
+      "status": "delivered",
+      "userId": "f49f"
+    },
+    {
+      "id": "e671",
+      "products": [
+        {
+          "id": "6a8d",
+          "quantity": 1
+        }
+      ],
+      "subtotal": 32,
+      "shipping": 4,
+      "total": 38,
+      "deliveryAddress": "Et consequatur omnisRatione laudantium Odio facere qui ut nLibero sint adipisci",
+      "status": "delivered",
+      "userId": "4947"
+    }
+  ]
+}
