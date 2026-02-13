@@ -4,9 +4,11 @@ import Loading from "./Loading";
 import DeletePopUp from "./DeletePopUp";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import supabase from "../../config/SupaBaseClient";
 
 const UsersOverView = () => {
-  const { data, Ispending } = useFetch("http://localhost:3000/users");
+  const [data, setData] = useState();
+
   const [usersData, setUsersData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isDeletePopUp, setIsDeletePopUp] = useState(false);
@@ -17,14 +19,27 @@ const UsersOverView = () => {
   const currentUsers = usersData.slice(startIndex, endIndex);
 
   useEffect(() => {
-    const users = data.filter((user) => user.type !== "admin");
-    setUsersData(users);
-  }, [data]);
+    const fetchData = async () => {
+      const { data, error } = await supabase.from("users").select();
 
-  const deletehandle = () => {
-    fetch(`http://localhost:3000/users/${id}`, {
-      method: "DELETE",
-    });
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        setData(data);
+        const users = data.filter((user) => user.type !== "admin");
+        setUsersData(users);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // useEffect(() => {
+
+  // }, [data]);
+
+  const deletehandle = async () => {
+    const { data, error } = await supabase.from("users").delete().eq("id", id);
     setUsersData(
       usersData.filter((e) => {
         return e.id !== id;
@@ -60,14 +75,14 @@ const UsersOverView = () => {
           </div>
 
           {/* Loading */}
-          {Ispending && (
+          {!data && (
             <div className="flex justify-center my-10">
               <Loading />
             </div>
           )}
 
           {/* Table */}
-          {!Ispending && (
+          {data && (
             <div className="overflow-x-auto">
               <table className="min-w-full border border-gray-200 divide-y divide-gray-200 bg-white">
                 <thead className="bg-gray-50">
@@ -90,12 +105,12 @@ const UsersOverView = () => {
                 <tbody className="divide-y divide-gray-200">
                   {currentUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm">{user.Name}</td>
+                      <td className="px-6 py-4 text-sm">{user.name}</td>
                       <td className="px-6 py-4 text-sm break-all">
-                        {user.Email}
+                        {user.email}
                       </td>
                       <td className="px-6 py-4 text-sm tracking-widest">
-                        {user.Password}
+                        {user.password}
                       </td>
                       <td className="px-6 py-4">
                         <button
