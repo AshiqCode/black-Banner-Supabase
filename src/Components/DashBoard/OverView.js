@@ -1,30 +1,77 @@
 import { useEffect, useState } from "react";
+import supabase from "../../config/SupaBaseClient";
 
 const Overview = () => {
   const [totalUsers, setTotalUsers] = useState([]);
   const [totalProducts, setTotalProducts] = useState([]);
   const [totalExpense, setTotalExpense] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:3000/users")
-      .then((res) => res.json())
-      .then((json) => setTotalUsers(json));
+    const datafetch = async () => {
+      const { data, error } = await supabase.from("users").select();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setTotalUsers(data);
+      }
 
-    fetch("http://localhost:3000/products")
-      .then((res) => res.json())
-      .then((json) => setTotalProducts(json));
+      // fetch("http://localhost:3000/users")
+      //   .then((res) => res.json())
+      //   .then((json) => setTotalUsers(json));
 
-    fetch("http://localhost:3000/products")
-      .then((res) => res.json())
-      .then((json) => {
-        const prices = json.map((product) => Number(product.price));
+      // fetch("http://localhost:3000/products")
+      //   .then((res) => res.json())
+      //   .then((json) => setTotalProducts(json));
+
+      // fetch("http://localhost:3000/products")
+      //   .then((res) => res.json())
+      //   .then((json) => {
+      //     const prices = json.map((product) => Number(product.price));
+      //     setTotalExpense(prices);
+      //   });
+    };
+    datafetch();
+  }, []);
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase.from("products").select();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setTotalProducts(data);
+      }
+
+      // fetch("http://localhost:3000/products")
+      //   .then((res) => res.json())
+      //   .then((json) => {
+      //     const prices = json.map((product) => Number(product.price));
+      //     setTotalExpense(prices);
+      //   });
+    };
+    datafetch();
+  }, []);
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase.from("products").select();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setTotalProducts(data);
+        const prices = data.map((product) => Number(product.price));
         setTotalExpense(prices);
-      });
+      }
+    };
+    datafetch();
   }, []);
 
   const total = totalExpense.reduce((a, b) => a + b, 0);
-  // console.log(total);
-
-  // console.log(totalExpense);
   return (
     <div className="flex-1 p-6">
       {/* Dashboard Content */}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import useFetch from "../../Hooks/usefetch";
 import Loading from "./Loading";
 import { toast } from "react-toastify";
 import DeletePopUp from "./DeletePopUp";
