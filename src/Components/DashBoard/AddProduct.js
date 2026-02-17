@@ -8,7 +8,7 @@ const AddProduct = ({ setIsAddProduct, setData }) => {
   const [image, setImage] = useState("");
   const [category, setCategory] = useState("");
 
-  const AddProductHandle = () => {
+  const AddProductHandle = async () => {
     if (productName && price && description && image && category) {
       const product = {
         Name: productName,
@@ -26,7 +26,6 @@ const AddProduct = ({ setIsAddProduct, setData }) => {
         .then((json) => {
           setData((prev) => [...prev, json]);
         });
-      // setData((prev) => [...prev, product]);
 
       toast.success("Product Added");
 

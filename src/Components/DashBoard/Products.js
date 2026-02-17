@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "../../Hooks/usefetch";
 import Loading from "./Loading";
 import { toast } from "react-toastify";
 import DeletePopUp from "./DeletePopUp";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import supabase from "../../config/SupaBaseClient";
 // import AddProduct from "./AddProduct";/
 const Products = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -18,10 +19,26 @@ const Products = () => {
   const [isAddProduct, setIsAddProduct] = useState(false);
   const [isDeletePopUp, setIsDeletePopUp] = useState(false);
   const [idToDelete, setIdToDelete] = useState("");
+  const [prodctData, setProdctData] = useState(null);
 
-  const { data, setData, Ispending } = useFetch(
-    "http://localhost:3000/products"
-  );
+  // const { data, setData, Ispending } = useFetch(
+  //   "http://localhost:3000/products"
+  // );
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase.from("products").select();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        // console.log(data);
+
+        setProdctData(data);
+      }
+    };
+    datafetch();
+  }, []);
 
   const clearForm = () => {
     setProductName("");
@@ -35,71 +52,114 @@ const Products = () => {
 
   const editHandle = (product) => {
     setIsEdit(true);
-    setProductName(product.Name);
+    setProductName(product.productName);
     setPrice(product.price);
-    setDescription(product.Description);
+    setDescription(product.description);
     setImage(product.image);
-    setCategory(product.Category);
-    setStockQuantity(product.StockQuantity);
+    setCategory(product.category);
+    setStockQuantity(product.stockQuantity);
     setID(product.id);
+    console.log(product);
 
     // console.log(product.Name);
   };
-  const saveEdits = () => {
-    let payload = {
-      Name: productName,
-      price: Number(price),
-      Description: description,
-      image: image,
-      Category: category,
-      StockQuantity: Number(stockQuantity),
-    };
-    if (id) {
-      payload = { ...payload, id };
-    }
+  const saveEdits = async () => {
     if (isEdit) {
       // console.log(id);
       // console.log(editedProduct.id);
-      fetch(`http://localhost:3000/products/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(payload),
-      });
-      const newArray = data.map((product) => {
-        if (id === product.id) {
-          return payload;
-        } else {
-          return product;
-        }
-      });
-      setData(newArray);
-      setIsEdit(false);
-      toast.success("Product Edited");
-      clearForm();
-    } else {
-      // console.log(newProduct);
+      // fetch(`http://localhost:3000/products/${id}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify(payload),
+      // });
+      const { data, error } = await supabase
+        .from("products")
+        .update({
+          productName,
+          price,
+          image,
+          description,
+          category,
+          stockQuantity,
+        })
+        .eq("id", id)
+        .select()
+        .single();
 
-      fetch("http://localhost:3000/products", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          setData((prev) => [...prev, json]);
-          clearForm();
-          setIsAddProduct(false);
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        const newArray = prodctData.map((product) => {
+          if (id === product.id) {
+            return data;
+          } else {
+            return product;
+          }
         });
+        setProdctData(newArray);
+        setIsEdit(false);
+        toast.success("Product Edited");
+        clearForm();
+        console.log(prodctData);
+      }
+    } else {
+      const { data, error } = await supabase
+        .from("products")
+        .insert({
+          productName,
+          price,
+          image,
+          description,
+          category,
+          stockQuantity,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        toast.success("Product Added");
+        setProdctData((prev) => [...prev, data]);
+        clearForm();
+        setIsAddProduct(false);
+      }
+
+      // fetch("http://localhost:3000/products", {
+      //   method: "POST",
+      //   body: JSON.stringify(payload),
+      // })
+      //   .then((res) => res.json())
+      //   .then((json) => {
+      //     setData((prev) => [...prev, json]);
+      //     clearForm();
+      //     setIsAddProduct(false);
+      //   });
     }
   };
 
-  const deleteHandle = () => {
-    fetch(`http://localhost:3000/products/${idToDelete}`, {
-      method: "DELETE",
-    });
-    setData(
-      data.filter((e) => {
-        return e.id !== idToDelete;
-      })
-    );
+  const deleteHandle = async () => {
+    // fetch(`http://localhost:3000/products/${idToDelete}`, {
+    //   method: "DELETE",
+    // });
+    const { data, error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", idToDelete)
+      .select();
+    if (error) {
+      console.log(error);
+    }
+    if (data) {
+      setProdctData((prev) =>
+        prev.filter((e) => {
+          return e.id !== idToDelete;
+        })
+      );
+      console.log(data);
+    }
+
     toast.success("Product Deleted");
     // console.log(id);
     setIsDeletePopUp(false);
@@ -147,28 +207,30 @@ const Products = () => {
           </div>
 
           {/* Loading */}
-          {Ispending && <Loading />}
+          {!prodctData && <Loading />}
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.map((product) => (
+            {prodctData?.map((product) => (
               <div
                 key={product.id}
                 className="bg-white rounded-xl shadow border hover:shadow-lg transition flex flex-col"
               >
                 <img
                   src={product.image}
-                  alt={product.Name}
+                  alt={product.productName}
                   className="w-full h-48 object-cover rounded-t-xl"
                 />
 
                 <div className="p-4 flex flex-col flex-1 gap-2">
-                  <h3 className="text-lg font-semibold">{product.Name}</h3>
+                  <h3 className="text-lg font-semibold">
+                    {product.productName}
+                  </h3>
                   <p className="font-medium">${product.price}</p>
-                  <p>Stock: {product.StockQuantity}</p>
-                  <p className="text-sm text-gray-600">{product.Description}</p>
+                  <p>Stock: {product.stockQuantity}</p>
+                  <p className="text-sm text-gray-600">{product.description}</p>
                   <span className="mt-auto text-yellow-500 font-semibold">
-                    {product.Category}
+                    {product.category}
                   </span>
                 </div>
 
