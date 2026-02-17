@@ -1,10 +1,24 @@
-import { useState } from "react";
-import useFetch from "../../Hooks/usefetch";
+import { useEffect, useState } from "react";
 import Loading from "../DashBoard/Loading";
 import { Link } from "react-router-dom";
 import NavBar from "./NavBar";
+import supabase from "../../config/SupaBaseClient";
 const Products = () => {
-  const { data, Ispending } = useFetch("http://localhost:3000/products");
+  const [data, setData] = useState(null);
+  // const { data, Ispending } = useFetch("http://localhost:3000/products");
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase.from("products").select();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setData(data);
+      }
+    };
+    datafetch();
+  }, []);
 
   const urls = [
     {
@@ -107,14 +121,14 @@ const Products = () => {
           </div>
 
           {/* Loading */}
-          {Ispending && (
+          {!data && (
             <div className="flex justify-center my-10">
               <Loading />
             </div>
           )}
 
           {/* Products Grid */}
-          {!Ispending && (
+          {data && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {data.map((product) => (
                 <div
@@ -124,13 +138,13 @@ const Products = () => {
                   <Link to={`/ProductDetails/${product.id}`}>
                     <img
                       src={product.image}
-                      alt={product.Name}
+                      alt={product.productName}
                       className="w-full h-48 object-cover rounded-t-xl"
                     />
 
                     <div className="p-4 flex flex-col gap-2 flex-1">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {product.Name}
+                        {product.productName}
                       </h3>
 
                       <p className="text-yellow-600 font-semibold text-lg">
@@ -138,11 +152,11 @@ const Products = () => {
                       </p>
 
                       <span className="inline-block w-fit text-xs font-medium text-red-600 px-3 py-1 rounded-full">
-                        {product.StockQuantity === 0
+                        {product.stockQuantity === 0
                           ? "Item is out of stock"
-                          : product.StockQuantity > 0 &&
-                            product.StockQuantity <= 3
-                          ? `${product.StockQuantity} item are left`
+                          : product.stockQuantity > 0 &&
+                            product.stockQuantity <= 3
+                          ? `${product.stockQuantity} item are left`
                           : null}
                       </span>
                     </div>

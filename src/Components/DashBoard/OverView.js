@@ -15,21 +15,6 @@ const Overview = () => {
         console.log(data);
         setTotalUsers(data);
       }
-
-      // fetch("http://localhost:3000/users")
-      //   .then((res) => res.json())
-      //   .then((json) => setTotalUsers(json));
-
-      // fetch("http://localhost:3000/products")
-      //   .then((res) => res.json())
-      //   .then((json) => setTotalProducts(json));
-
-      // fetch("http://localhost:3000/products")
-      //   .then((res) => res.json())
-      //   .then((json) => {
-      //     const prices = json.map((product) => Number(product.price));
-      //     setTotalExpense(prices);
-      //   });
     };
     datafetch();
   }, []);
@@ -44,13 +29,6 @@ const Overview = () => {
         console.log(data);
         setTotalProducts(data);
       }
-
-      // fetch("http://localhost:3000/products")
-      //   .then((res) => res.json())
-      //   .then((json) => {
-      //     const prices = json.map((product) => Number(product.price));
-      //     setTotalExpense(prices);
-      //   });
     };
     datafetch();
   }, []);
