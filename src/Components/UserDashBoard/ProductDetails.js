@@ -28,13 +28,14 @@ const ProductDetails = () => {
     };
     datafetch();
   }, [param]);
+  console.log(param);
 
   useEffect(() => {
     const datafetch = async () => {
       const { data, error } = await supabase
         .from("cart")
         .select()
-        .eq("userId", user)
+        .eq("productId", param)
         .single();
       if (error) {
         // console.log(error);
@@ -78,8 +79,6 @@ const ProductDetails = () => {
           const { data, error } = await supabase
             .from("cart")
             .update({
-              userId: user,
-              productId: param,
               quantity: currentCart.quantity + 1,
             })
             .eq("id", currentCart.id)
