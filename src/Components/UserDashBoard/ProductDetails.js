@@ -8,6 +8,7 @@ import supabase from "../../config/SupaBaseClient";
 
 const ProductDetails = () => {
   const [data, setData] = useState(null);
+  const [currentCart, setCurrentCart] = useState(null);
   const param = useParams().id;
 
   useEffect(() => {
@@ -27,6 +28,25 @@ const ProductDetails = () => {
     };
     datafetch();
   }, [param]);
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("cart")
+        .select()
+        .eq("userId", user)
+        .single();
+      if (error) {
+        // console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setCurrentCart(data);
+      }
+    };
+    datafetch();
+  }, [param]);
+  console.log(currentCart);
 
   const user = localStorage.getItem("user");
   // const { data, Ispending } = useFetch(
@@ -50,49 +70,37 @@ const ProductDetails = () => {
   }, [data]);
 
   const navigate = useNavigate();
-  const AddToCartHandle = () => {
+  const AddToCartHandle = async () => {
     if (user) {
-      fetch(`http://localhost:3000/users/${user}`)
-        .then((response) => response.json())
-        .then((user) => {
-          var mergedObj;
-          if (user.cart) {
-            const item = user.cart.find((cart) => param === cart.id);
-            if (item) {
-              if (item.Quantity >= data.StockQuantity) {
-                toast.warning(
-                  `You can't place more than ${data.StockQuantity} items.`
-                );
-                return;
-              }
-
-              mergedObj = {
-                ...user,
-                cart: user.cart.map((cart) =>
-                  cart.id === param
-                    ? { ...cart, Quantity: cart.Quantity + 1 }
-                    : cart
-                ),
-              };
-            } else {
-              mergedObj = {
-                ...user,
-                cart: [...user.cart, { id: param, Quantity: 1 }],
-              };
-            }
-          } else {
-            mergedObj = {
-              ...user,
-              cart: [{ id: param, Quantity: 1 }],
-            };
-          }
-
-          fetch(`http://localhost:3000/users/${user.id}`, {
-            method: "PUT",
-            body: JSON.stringify(mergedObj),
-          });
-          toast.success("Product Added successfully");
-        });
+      console.log(data);
+      if (currentCart) {
+        if (currentCart.quantity < data.stockQuantity) {
+          const { data, error } = await supabase
+            .from("cart")
+            .update({
+              userId: user,
+              productId: param,
+              quantity: currentCart.quantity + 1,
+            })
+            .eq("id", currentCart.id)
+            .select()
+            .single();
+          toast.success("Product updated successfully");
+          setCurrentCart(data);
+        } else {
+          toast.warning(
+            `You can't place more than ${data.stockQuantity} items.`
+          );
+        }
+      } else {
+        const { data, error } = await supabase
+          .from("cart")
+          .insert({ userId: user, productId: param, quantity: 1 })
+          .select()
+          .single();
+        toast.success("Product Added successfully");
+        setCurrentCart(data);
+      }
     } else {
       toast.warning("Your cart awaits, just log in!");
       navigate("/login");
