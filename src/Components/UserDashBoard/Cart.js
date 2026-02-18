@@ -4,17 +4,74 @@ import Loading from "../DashBoard/Loading";
 import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import { toast } from "react-toastify";
+import supabase from "../../config/SupaBaseClient";
 
 const Cart = () => {
   const [cartProducts, setCartProducts] = useState([]);
   const navigate = useNavigate();
-  // const [isProceed, setIsProceed] = useState(true);
+  const [productIds, setProductIds] = useState([]);
+  const [data, setData] = useState(null);
+  const [product, setProduct] = useState(null);
 
   const param = useParams().user;
-  const { data, setData, Ispending } = useFetch(
-    `http://localhost:3000/users/${param}`
-  );
-  const cart = data.cart;
+  // const { data, setData, Ispending } = useFetch(
+  //   `http://localhost:3000/users/${param}`
+  // );
+  const user = localStorage.getItem("user");
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("cart")
+        .select()
+        .eq("userId", user);
+
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setData(data);
+        const productIds = data.map((item) => item.productId);
+        setProductIds((prev) => [...prev, ...productIds]);
+      }
+    };
+    datafetch();
+  }, [param]);
+  console.log(data);
+  console.log(productIds);
+
+  useEffect(() => {
+    if (productIds.length > 0 && data) {
+      const datafetch = async () => {
+        const { data: productdata, error } = await supabase
+          .from("products")
+          .select("*")
+          .in("id", productIds);
+
+        if (error) {
+          console.log(error);
+          return;
+        }
+
+        const mergedProducts = productdata.map((productItem) => {
+          const cartItem = data.find(
+            (cart) => cart.productId === productItem.id
+          );
+          return {
+            ...productItem,
+            quantity: cartItem ? cartItem.quantity : 0,
+          };
+        });
+
+        setProduct(mergedProducts);
+      };
+      datafetch();
+    }
+  }, [productIds, data]);
+  console.log(product);
+
+  const cart = data;
 
   useEffect(() => {
     if (cart && cartProducts.length === 0) {
@@ -30,35 +87,62 @@ const Cart = () => {
       });
     }
   }, [cart]);
-  // console.log(data.cart, "Quanity");
 
-  const increaseQuantityHandle = (productId) => {
-    // console.log(productId);
-    const updatedCart = cartProducts.map((product) => {
-      if (product.id === productId) {
-        if (product.StockQuantity > product.quantity) {
-          return { ...product, quantity: product.quantity + 1 };
-        } else {
-          toast.warning(
-            `You can't place more than  ${product.StockQuantity}  items`
-          );
-        }
+  const increaseQuantityHandle = async (productId) => {
+    console.log(productId);
+    const item = product.find((item) => item.id === productId);
+    if (!item) {
+      return;
+    }
+
+    if (productId === item.id) {
+      if (item.stockQuantity > item.quantity) {
+        const { data, error } = await supabase
+          .from("cart")
+          .update({ quantity: item.quantity + 1 })
+          .match({ userId: user, productId: productId })
+          .select()
+          .single();
+        console.log("increse");
+        console.log(data);
+        console.log(product);
+        setProduct((prev) =>
+          prev.map((e) =>
+            e.id === productId ? { ...e, quantity: e.quantity + 1 } : e
+          )
+        );
+      } else {
+        toast.warning(
+          `You can't place more than  ${item.stockQuantity}  items`
+        );
       }
-      return product;
-    });
-    setCartProducts(updatedCart);
-    const updatedData = { ...data };
-    updatedData.cart = updatedCart.map((item) => ({
-      id: item.id,
-      Quantity: item.quantity, // match your original cart structure
-    }));
-    setData(updatedData);
+    }
 
-    // Update backend
-    fetch(`http://localhost:3000/users/${param}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedData),
-    });
+    // const updatedCart = cartProducts.map((product) => {
+    //   if (product.id === productId) {
+    //     if (product.StockQuantity > product.quantity) {
+    //       return { ...product, quantity: product.quantity + 1 };
+    //     } else {
+    //       toast.warning(
+    //         `You can't place more than  ${product.StockQuantity}  items`
+    //       );
+    //     }
+    //   }
+    //   return product;
+    // });
+    // setCartProducts(updatedCart);
+    // const updatedData = { ...data };
+    // updatedData.cart = updatedCart.map((item) => ({
+    //   id: item.id,
+    //   Quantity: item.quantity, // match your original cart structure
+    // }));
+    // setData(updatedData);
+
+    // // Update backend
+    // fetch(`http://localhost:3000/users/${param}`, {
+    //   method: "PUT",
+    //   body: JSON.stringify(updatedData),
+    // });
   };
   const decreaseQuantityHandle = (productId) => {
     const updatedCart = cartProducts.map((product) => {
@@ -160,12 +244,12 @@ const Cart = () => {
       {/* Navbar */}
       <NavBar />
       {/* Main Content */}
-      {Ispending && <Loading />}
-      {!Ispending && (
+      {!data && <Loading />}
+      {data && (
         <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-12">
           <h2 className="text-2xl font-bold mb-6">Your Shopping Cart</h2>
 
-          {cartProducts.map((product, index) => {
+          {product?.map((product, index) => {
             return (
               <div
                 key={index}
@@ -175,7 +259,7 @@ const Cart = () => {
                 <div className="w-full sm:w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
                     src={product.image}
-                    alt={product.Name}
+                    alt={product.productName}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -183,16 +267,16 @@ const Cart = () => {
                 {/* Product Info */}
                 <div className="flex-1 flex flex-col gap-1">
                   <h3 className="text-lg font-semibold text-gray-900">
-                    {product.Name}
+                    {product.productName}
                   </h3>
 
                   <p className="text-sm text-gray-500">
                     Category:{" "}
-                    <span className="font-medium">{product.Category}</span>
+                    <span className="font-medium">{product.category}</span>
                   </p>
 
                   <p className="text-sm text-gray-600 line-clamp-2">
-                    {product.Description}
+                    {product.description}
                   </p>
 
                   <div className="mt-2 flex items-center justify-between">
