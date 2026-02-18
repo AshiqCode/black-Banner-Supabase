@@ -10,7 +10,7 @@ const ProductDetails = () => {
   const [data, setData] = useState(null);
   const [currentCart, setCurrentCart] = useState(null);
   const param = useParams().id;
-
+  const user = localStorage.getItem("user");
   useEffect(() => {
     const datafetch = async () => {
       const { data, error } = await supabase
@@ -35,8 +35,10 @@ const ProductDetails = () => {
       const { data, error } = await supabase
         .from("cart")
         .select()
-        .eq("productId", param)
-        .single();
+        .match({ userId: user, productId: param }).maybeSingle;
+      // .eq("userId", user)
+      // .eq("productId", param);
+
       if (error) {
         // console.log(error);
       }
@@ -49,7 +51,6 @@ const ProductDetails = () => {
   }, [param]);
   console.log(currentCart);
 
-  const user = localStorage.getItem("user");
   // const { data, Ispending } = useFetch(
   //   `http://localhost:3000/products/${param}`
   // );
