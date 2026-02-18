@@ -4,65 +4,104 @@ import Loading from "../DashBoard/Loading";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
+import supabase from "../../config/SupaBaseClient";
 
 const Profile = () => {
   const param = useParams().user;
-  const { data, setData, Ispending } = useFetch(
-    `http://localhost:3000/users/${param}`
-  );
+  // const { data, setData, Ispending } = useFetch(
+  //   `http://localhost:3000/users/${param}`
+  // );
+  const [data, setData] = useState(null);
+  // console.log(param);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .eq("id", param)
+        .single();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setData(data);
+      }
+    };
+    fetchData();
+  }, [param]);
   const [isEdit, setIsEdit] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
-  const [Name, setFullName] = useState(data.Name);
-  const [Email, setEmail] = useState(data.Email);
-  const [Password, setPassword] = useState(data.Password);
-  const [Number, setNumber] = useState(data.Number);
-  const [Province, setProvince] = useState(data.Province);
-  const [City, setCity] = useState(data.City);
-  const [Street, setStreet] = useState(data.Street);
-  const [Address, setAddress] = useState(data.Address);
+  const [Name, setFullName] = useState(data?.name);
+  const [Email, setEmail] = useState(data?.email);
+  const [Password, setPassword] = useState(data?.password);
+  const [Number, setNumber] = useState(data?.number);
+  const [Province, setProvince] = useState(data?.province);
+  const [City, setCity] = useState(data?.city);
+  const [Street, setStreet] = useState(data?.street);
+  const [Address, setAddress] = useState(data?.address);
   const [NewPassword, setNewPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const cart = data.cart;
+  // const cart = data.cart;
   useEffect(() => {
     if (data) {
-      setFullName(data.Name || "");
-      setEmail(data.Email || "");
-      setPassword(data.Password || "");
-      setNumber(data.Number || "");
-      setProvince(data.Province || "");
-      setCity(data.City || "");
-      setStreet(data.Street || "");
-      setAddress(data.Address || "");
+      setFullName(data.name || "");
+      setEmail(data.email || "");
+      setPassword(data.password || "");
+      setNumber(data.number || "");
+      setProvince(data.province || "");
+      setCity(data.city || "");
+      setStreet(data.street || "");
+      setAddress(data.address || "");
     }
   }, [data]);
   const cancleHandle = () => {
     setIsEdit(false);
   };
-  const saveEdits = () => {
+  const saveEdits = async () => {
     if (Name && Password) {
-      var newUser = {
-        Name: Name,
-        Email: Email,
-        Password: Password,
-        Number: Number,
-        Province: Province,
-        City: City,
-        Street: Street,
-        Address: Address,
-      };
+      // var newUser = {
+      //   Name: Name,
+      //   Email: Email,
+      //   Password: Password,
+      //   Number: Number,
+      //   Province: Province,
+      //   City: City,
+      //   Street: Street,
+      //   Address: Address,
+      // };
 
-      newUser = { ...newUser, cart };
+      // newUser = { ...newUser, cart };
       // console.log(newUser);
-      setData(newUser);
+      // setData(newUser);
 
-      fetch(`http://localhost:3000/users/${param}`, {
-        method: "PUT",
-        body: JSON.stringify(newUser),
-      });
+      // fetch(`http://localhost:3000/users/${param}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify(newUser),
+      // });
+
+      const { data, error } = await supabase
+        .from("users")
+        .update({
+          name: Name,
+          email: Email,
+          password: Password,
+          number: Number,
+          province: Province,
+          city: City,
+          street: Street,
+          address: Address,
+        })
+        .eq("id", param)
+        .select()
+        .single();
+      setData(data);
+
       toast.success("Profile Edited");
       setIsEdit(false);
     } else {
@@ -70,19 +109,30 @@ const Profile = () => {
     }
   };
 
-  const changePassword = () => {
+  const changePassword = async () => {
     if (Password && NewPassword && ConfirmPassword) {
-      if (data.Password === Password) {
+      if (data.password === Password) {
         if (ConfirmPassword !== NewPassword) {
           toast.error("Confirm Password Again.");
         } else {
-          var userData = data;
-          userData.Password = NewPassword;
-          fetch(`http://localhost:3000/users/${param}`, {
-            method: "PUT",
-            body: JSON.stringify(userData),
-          });
-          // setData(userData);
+          // var userData = data;
+          // userData.Password = NewPassword;
+          // fetch(`http://localhost:3000/users/${param}`, {
+          //   method: "PUT",
+          //   body: JSON.stringify(userData),
+          // });
+          // // setData(userData);
+          // toast.success("Password Change successfully ");
+          // setIsChangePassword(false);
+          const { data, error } = await supabase
+            .from("users")
+            .update({
+              password: NewPassword,
+            })
+            .eq("id", param)
+            .select()
+            .single();
+          setData(data);
           toast.success("Password Change successfully ");
           setIsChangePassword(false);
         }
@@ -100,8 +150,8 @@ const Profile = () => {
       <NavBar />
 
       {/* Main Content */}
-      {Ispending && <Loading />}
-      {!Ispending && (
+      {!data && <Loading />}
+      {data && (
         <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-12">
           <h2 className="text-2xl font-bold mb-6">Your Account</h2>
 
@@ -110,10 +160,10 @@ const Profile = () => {
             <div className="bg-white rounded-xl shadow border border-gray-200 p-6">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center text-xl font-bold">
-                  {data.Name?.charAt(0)}
+                  {data.name?.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold">{data.Name}</h3>
+                  <h3 className="text-lg font-semibold">{data.name}</h3>
                   <p className="text-sm text-gray-600">
                     Registered BlackBanner User
                   </p>
@@ -123,7 +173,7 @@ const Profile = () => {
               {/* About User */}
               <p className="text-sm text-gray-700 leading-relaxed mb-4">
                 Welcome to <span className="font-semibold">BlackBanner</span>,{" "}
-                {data.Name}. This profile helps you manage your account, track
+                {data.name}. This profile helps you manage your account, track
                 your activity, and enjoy a seamless shopping experience. Your
                 account is designed to give you quick access to products,
                 orders, and personalized features.
@@ -139,42 +189,42 @@ const Profile = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-500">Full Name</p>
-                  <p className="font-medium">{data.Name}</p>
+                  <p className="font-medium">{data.name}</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Email</p>
-                  <p className="font-medium">{data.Email}</p>
+                  <p className="font-medium">{data.email}</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Number</p>
-                  <p className="font-medium">{data.Number ? Number : "..."}</p>
+                  <p className="font-medium">{data.number ? Number : "..."}</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Province</p>
                   <p className="font-medium">
-                    {data.Province ? Province : "..."}
+                    {data.province ? Province : "..."}
                   </p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">City</p>
-                  <p className="font-medium">{data.City ? City : "..."}</p>
+                  <p className="font-medium">{data.city ? City : "..."}</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">
                     Building / House No / Floor / Street
                   </p>
-                  <p className="font-medium">{data.Street ? Street : "..."}</p>
+                  <p className="font-medium">{data.street ? Street : "..."}</p>
                 </div>
 
                 <div>
                   <p className="text-gray-500">Address</p>
                   <p className="font-medium">
-                    {data.Address ? Address : "..."}
+                    {data.address ? Address : "..."}
                   </p>
                 </div>
               </div>
