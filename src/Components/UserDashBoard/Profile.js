@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import useFetch from "../../Hooks/usefetch";
 import Loading from "../DashBoard/Loading";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -85,7 +84,7 @@ const Profile = () => {
       //   body: JSON.stringify(newUser),
       // });
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("users")
         .update({
           name: Name,
@@ -124,7 +123,7 @@ const Profile = () => {
           // // setData(userData);
           // toast.success("Password Change successfully ");
           // setIsChangePassword(false);
-          const { data, error } = await supabase
+          const { data } = await supabase
             .from("users")
             .update({
               password: NewPassword,

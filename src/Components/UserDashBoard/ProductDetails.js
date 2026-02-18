@@ -48,7 +48,7 @@ const ProductDetails = () => {
       }
     };
     datafetch();
-  }, [param]);
+  }, [param, user]);
   console.log(currentCart);
 
   // const { data, Ispending } = useFetch(
@@ -77,7 +77,7 @@ const ProductDetails = () => {
       console.log(data);
       if (currentCart) {
         if (currentCart.quantity < data.stockQuantity) {
-          const { data, error } = await supabase
+          const { data } = await supabase
             .from("cart")
             .update({
               quantity: currentCart.quantity + 1,
@@ -93,7 +93,7 @@ const ProductDetails = () => {
           );
         }
       } else {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("cart")
           .insert({ userId: user, productId: param, quantity: 1 })
           .select()

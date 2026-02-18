@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import useFetch from "../../Hooks/usefetch";
 import Loading from "../DashBoard/Loading";
 import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
@@ -14,9 +13,7 @@ const Cart = () => {
   const [product, setProduct] = useState(null);
 
   const param = useParams().user;
-  // const { data, setData, Ispending } = useFetch(
-  //   `http://localhost:3000/users/${param}`
-  // );
+
   const user = localStorage.getItem("user");
 
   useEffect(() => {
@@ -73,21 +70,6 @@ const Cart = () => {
 
   const cart = data;
 
-  useEffect(() => {
-    if (cart && cartProducts.length === 0) {
-      cart.map((product) => {
-        fetch(`http://localhost:3000/products/${product.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            setCartProducts((prev) => [
-              ...prev,
-              { ...json, quantity: product.Quantity },
-            ]);
-          });
-      });
-    }
-  }, [cart]);
-
   const increaseQuantityHandle = async (productId) => {
     console.log(productId);
     const item = product.find((item) => item.id === productId);
@@ -117,82 +99,52 @@ const Cart = () => {
         );
       }
     }
-
-    // const updatedCart = cartProducts.map((product) => {
-    //   if (product.id === productId) {
-    //     if (product.StockQuantity > product.quantity) {
-    //       return { ...product, quantity: product.quantity + 1 };
-    //     } else {
-    //       toast.warning(
-    //         `You can't place more than  ${product.StockQuantity}  items`
-    //       );
-    //     }
-    //   }
-    //   return product;
-    // });
-    // setCartProducts(updatedCart);
-    // const updatedData = { ...data };
-    // updatedData.cart = updatedCart.map((item) => ({
-    //   id: item.id,
-    //   Quantity: item.quantity, // match your original cart structure
-    // }));
-    // setData(updatedData);
-
-    // // Update backend
-    // fetch(`http://localhost:3000/users/${param}`, {
-    //   method: "PUT",
-    //   body: JSON.stringify(updatedData),
-    // });
   };
-  const decreaseQuantityHandle = (productId) => {
-    const updatedCart = cartProducts.map((product) => {
-      if (product.id === productId) {
-        const newQuantity = product.quantity > 1 ? product.quantity - 1 : 1;
-        return { ...product, quantity: newQuantity };
+  const decreaseQuantityHandle = async (productId) => {
+    console.log(productId);
+    const item = product.find((item) => item.id === productId);
+    if (!item) {
+      return;
+    }
+    if (productId === item.id) {
+      if (item.quantity > 1) {
+        const { data, error } = await supabase
+          .from("cart")
+          .update({ quantity: item.quantity - 1 })
+          .match({ userId: user, productId: productId })
+          .select()
+          .single();
+        console.log("increse");
+        console.log(data);
+        console.log(product);
+        setProduct((prev) =>
+          prev.map((e) =>
+            e.id === productId ? { ...e, quantity: e.quantity - 1 } : e
+          )
+        );
+      } else {
+        toast.warning(`You can't place less than 1 items`);
       }
-      return product;
-    });
-
-    setCartProducts(updatedCart);
-
-    const updatedData = { ...data };
-    updatedData.cart = updatedCart.map((item) => ({
-      id: item.id,
-      Quantity: item.quantity,
-    }));
-    setData(updatedData);
-
-    // Update backend
-    fetch(`http://localhost:3000/users/${param}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedData),
-    });
+    }
   };
 
-  const removeItem = (productId) => {
-    const newCart = cartProducts.filter((item) => item.id !== productId);
-    // console.log(cartProducts, newCart);
-    setCartProducts(newCart);
-
-    // console.log(newCart);
-
-    const newData = data;
-    const newCartIDS = newData.cart.filter((item) => item.id !== productId);
-
-    newData.cart = newCartIDS;
-    // console.log(newData);
-    setData(newData);
-    fetch(`http://localhost:3000/users/${param}`, {
-      method: "PUT",
-      body: JSON.stringify(newData),
-    });
+  const removeItem = async (productId) => {
+    const { data, error } = await supabase
+      .from("cart")
+      .delete()
+      .match({ userId: user, productId: productId })
+      .select()
+      .single();
+    if (error) {
+      return;
+    }
+    setProduct((prev) => prev.filter((item) => item.id !== productId));
   };
 
   const placeOrder = () => {
     console.log("Order Placed");
     navigate("/CheckOut");
   };
-  // var stockIssue = true;
   const handleValidation = () => {
     return new Promise((resolve, reject) => {
       let stockIssue = true;
