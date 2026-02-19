@@ -87,8 +87,7 @@ const Cart = () => {
           .from("cart")
           .update({ quantity: item.quantity + 1 })
           .match({ userId: user, productId: productId })
-          .select()
-          .single();
+          .select();
         console.log("increse");
         console.log(data);
         console.log(product);
@@ -121,8 +120,7 @@ const Cart = () => {
           .from("cart")
           .update({ quantity: item.quantity - 1 })
           .match({ userId: user, productId: productId })
-          .select()
-          .single();
+          .select();
         console.log("increse");
         console.log(data);
         console.log(product);
@@ -144,8 +142,7 @@ const Cart = () => {
       .from("cart")
       .delete()
       .match({ userId: user, productId: productId })
-      .select()
-      .single();
+      .select();
     if (error) {
       return;
     }
@@ -156,40 +153,50 @@ const Cart = () => {
     console.log("Order Placed");
     navigate("/CheckOut");
   };
-  const handleValidation = () => {
-    return new Promise((resolve, reject) => {
-      let stockIssue = true;
+  const handleValidation = async () => {
+    if (!product || product.length === 0) {
+      return true;
+    }
 
-      if (!cart || cart.length === 0) {
-        resolve(true);
-        return;
-      }
+    try {
+      // 1. Get all current IDs from your local state
+      const ids = product.map((p) => p.id);
 
-      const fetchPromises = cart.map((product) =>
-        fetch(`http://localhost:3000/products/${product.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            const item = { ...json, quantity: product.Quantity };
-            if (item.quantity > item.StockQuantity) {
-              if (item.StockQuantity === 0) {
-                toast.warning(`Item ${item.Name} is out of stock`);
-              } else {
-                toast.warning(
-                  `Available quantity of ${item.Name} is ${item.StockQuantity}`
-                );
-              }
-              stockIssue = false;
+      // 2. Fetch fresh stock data from Supabase for these products
+      const { data: freshStock, error } = await supabase
+        .from("products")
+        .select("id, productName, stockQuantity")
+        .in("id", ids);
+
+      if (error) throw error;
+
+      let stockIssue = false;
+
+      // 3. Compare local cart quantity against database stock
+      product.forEach((cartItem) => {
+        const dbItem = freshStock.find((db) => db.id === cartItem.id);
+
+        if (dbItem) {
+          if (cartItem.quantity > dbItem.stockQuantity) {
+            stockIssue = true;
+            if (dbItem.stockQuantity === 0) {
+              toast.warning(`Item ${dbItem.productName} is out of stock`);
+            } else {
+              toast.warning(
+                `Only ${dbItem.stockQuantity} units of ${dbItem.productName} available`
+              );
             }
-          })
-          .catch(() => {
-            stockIssue = false;
-          })
-      );
+          }
+        }
+      });
 
-      Promise.all(fetchPromises)
-        .then(() => resolve(stockIssue))
-        .catch(reject);
-    });
+      // Returns true if NO issues were found
+      return !stockIssue;
+    } catch (err) {
+      console.error("Validation error:", err);
+      toast.error("Could not verify stock. Please try again.");
+      return false;
+    }
   };
 
   const checkOutHandle = () => {
