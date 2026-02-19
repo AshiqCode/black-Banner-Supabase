@@ -11,6 +11,7 @@ const Cart = () => {
   const [productIds, setProductIds] = useState([]);
   const [data, setData] = useState(null);
   const [product, setProduct] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const param = useParams().user;
 
@@ -72,8 +73,11 @@ const Cart = () => {
 
   const increaseQuantityHandle = async (productId) => {
     console.log(productId);
+    if (isUpdating) return;
+    setIsUpdating(true);
     const item = product.find((item) => item.id === productId);
     if (!item) {
+      setIsUpdating(false);
       return;
     }
 
@@ -93,17 +97,22 @@ const Cart = () => {
             e.id === productId ? { ...e, quantity: e.quantity + 1 } : e
           )
         );
+        setIsUpdating(false);
       } else {
         toast.warning(
           `You can't place more than  ${item.stockQuantity}  items`
         );
+        setIsUpdating(false);
       }
     }
   };
   const decreaseQuantityHandle = async (productId) => {
     console.log(productId);
+    if (isUpdating) return;
+    setIsUpdating(true);
     const item = product.find((item) => item.id === productId);
     if (!item) {
+      setIsUpdating(false);
       return;
     }
     if (productId === item.id) {
@@ -122,8 +131,10 @@ const Cart = () => {
             e.id === productId ? { ...e, quantity: e.quantity - 1 } : e
           )
         );
+        setIsUpdating(false);
       } else {
         toast.warning(`You can't place less than 1 items`);
+        setIsUpdating(false);
       }
     }
   };
@@ -272,7 +283,7 @@ const Cart = () => {
             );
           })}
           <div>
-            {cartProducts.length !== 0 && (
+            {product?.length !== 0 && (
               <button
                 onClick={checkOutHandle}
                 className="flex-1 py-3 px-8 mt-8 font-medium rounded-lg transition bg-yellow-500 hover:bg-yellow-400 text-black"
@@ -280,7 +291,7 @@ const Cart = () => {
                 Check Out
               </button>
             )}
-            {cartProducts.length === 0 && (
+            {product?.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20">
                 <h2 className="text-2xl font-semibold mb-4">
                   Your cart is empty
