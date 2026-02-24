@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ReviewPupUp from "./ReviewPupUp";
+import supabase from "../../config/SupaBaseClient";
 
 const OrderDetails = ({
   productId,
@@ -12,21 +13,86 @@ const OrderDetails = ({
   const [orderedProducts, setOrderedProducts] = useState([]);
   const [reviewPupUp, setReviewPupUp] = useState(false);
   const [currentProductId, setcurrentProductId] = useState("");
+  const [currentOrder, setCurrentOrder] = useState(null);
+  const user = localStorage.getItem("user");
+  const [productIds, setProductIds] = useState(null);
+  const [products, setProducts] = useState(null);
+
+  // useEffect(() => {
+  //   if (productId && orderedProducts.length === 0) {
+  //     productId.map((product) => {
+  //       fetch(`http://localhost:3000/products/${product.id}`)
+  //         .then((res) => res.json())
+  //         .then((json) => {
+  //           setOrderedProducts((prev) => [
+  //             ...prev,
+  //             { ...json, quantity: product.Quantity },
+  //           ]);
+  //         });
+  //     });
+  //   }
+  // }, [productId]);
 
   useEffect(() => {
-    if (productId && orderedProducts.length === 0) {
-      productId.map((product) => {
-        fetch(`http://localhost:3000/products/${product.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            setOrderedProducts((prev) => [
-              ...prev,
-              { ...json, quantity: product.Quantity },
-            ]);
-          });
-      });
-    }
-  }, [productId]);
+    const fetchOrderProducts = async () => {
+      const { data: orderId, error } = await supabase
+        .from("orders")
+        .select()
+        .eq("id", currenorderId)
+        .eq("userId", user)
+        .single();
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(orderId);
+      setCurrentOrder(orderId);
+    };
+    fetchOrderProducts();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchOrderProducts = async () => {
+      if (currentOrder && user) return;
+      const { data: productId, error } = await supabase
+        .from("order_products")
+        .select()
+        .eq("order_id", currenorderId);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(productId);
+      setProductIds(productId.map((item) => item.product_id));
+    };
+    fetchOrderProducts();
+  }, [currentOrder]);
+
+  useEffect(() => {
+    const fetchOrderProducts = async () => {
+      const { data: products, error } = await supabase
+        .from("products")
+        .select()
+        .in("id", productIds);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(products);
+      setProducts(products);
+    };
+    fetchOrderProducts();
+  }, [productIds]);
+
+  console.log(currentOrder);
+  console.log(productIds);
+  console.log(products);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
@@ -49,7 +115,7 @@ const OrderDetails = ({
 
           {/* Products Grid */}
           <div className="grid gap-6  sm:grid-cols-2 lg:grid-cols-3">
-            {orderedProducts.map((item, index) => (
+            {products?.map((item, index) => (
               <div
                 key={item.id}
                 className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 flex flex-col"
@@ -67,25 +133,25 @@ const OrderDetails = ({
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-900 truncate">
-                      {item.Name}
+                      {item.productName}
                     </h2>
 
                     <p className="text-sm text-gray-500">
                       Category:{" "}
                       <span className="font-medium text-gray-700">
-                        {item.Category}
+                        {item.category}
                       </span>
                     </p>
 
                     <p className="text-sm text-gray-500 line-clamp-3">
                       Description:{" "}
                       <span className="font-medium text-gray-700">
-                        {item.Description}
+                        {item.description}
                       </span>
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t text-sm flex justify-between items-center text-gray-600">
+                  {/* <div className="pt-3 border-t text-sm flex justify-between items-center text-gray-600">
                     <span>Ordered Quantity</span>
 
                     {currentStatus === "delivered" && (
@@ -105,7 +171,7 @@ const OrderDetails = ({
                         </button>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ))}
@@ -115,12 +181,14 @@ const OrderDetails = ({
               Delivery Address
             </div>
             <div className="text-gray-600 mb-4">
-              {orders[0].deliveryAddress}
+              {currentOrder?.delivery_address}
             </div>
 
             <div className="pt-3 border-t text-sm flex justify-between text-gray-600">
               <span className="font-medium">Total Price</span>
-              <span className="font-semibold text-gray-800">{total}</span>
+              <span className="font-semibold text-gray-800">
+                {currentOrder?.total}
+              </span>
             </div>
           </div>
         </div>

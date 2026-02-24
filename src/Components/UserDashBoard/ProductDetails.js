@@ -83,8 +83,8 @@ const ProductDetails = () => {
               quantity: currentCart.quantity + 1,
             })
             .eq("id", currentCart.id)
-            .select()
-            .single();
+            .select();
+
           toast.success("Product updated successfully");
           setCurrentCart(data);
         } else {
@@ -96,8 +96,8 @@ const ProductDetails = () => {
         const { data } = await supabase
           .from("cart")
           .insert({ userId: user, productId: param, quantity: 1 })
-          .select()
-          .single();
+          .select();
+
         toast.success("Product Added successfully");
         setCurrentCart(data);
       }

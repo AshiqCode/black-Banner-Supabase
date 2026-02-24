@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import supabase from "../../config/SupaBaseClient";
 
 const Cart = () => {
-  const [cartProducts, setCartProducts] = useState([]);
   const navigate = useNavigate();
   const [productIds, setProductIds] = useState([]);
   const [data, setData] = useState(null);
@@ -35,7 +34,7 @@ const Cart = () => {
       }
     };
     datafetch();
-  }, [param]);
+  }, [param, user]);
   console.log(data);
   console.log(productIds);
 
@@ -68,9 +67,6 @@ const Cart = () => {
     }
   }, [productIds, data]);
   console.log(product);
-
-  const cart = data;
-
   const increaseQuantityHandle = async (productId) => {
     console.log(productId);
     if (isUpdating) return;
@@ -83,7 +79,7 @@ const Cart = () => {
 
     if (productId === item.id) {
       if (item.stockQuantity > item.quantity) {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("cart")
           .update({ quantity: item.quantity + 1 })
           .match({ userId: user, productId: productId })
@@ -116,7 +112,7 @@ const Cart = () => {
     }
     if (productId === item.id) {
       if (item.quantity > 1) {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("cart")
           .update({ quantity: item.quantity - 1 })
           .match({ userId: user, productId: productId })
@@ -138,7 +134,7 @@ const Cart = () => {
   };
 
   const removeItem = async (productId) => {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("cart")
       .delete()
       .match({ userId: user, productId: productId })
@@ -149,7 +145,7 @@ const Cart = () => {
     setProduct((prev) => prev.filter((item) => item.id !== productId));
   };
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     console.log("Order Placed");
     navigate("/CheckOut");
   };
@@ -290,7 +286,7 @@ const Cart = () => {
             );
           })}
           <div>
-            {product?.length !== 0 && (
+            {productIds?.length !== 0 && (
               <button
                 onClick={checkOutHandle}
                 className="flex-1 py-3 px-8 mt-8 font-medium rounded-lg transition bg-yellow-500 hover:bg-yellow-400 text-black"
@@ -298,7 +294,7 @@ const Cart = () => {
                 Check Out
               </button>
             )}
-            {product?.length === 0 && (
+            {productIds?.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20">
                 <h2 className="text-2xl font-semibold mb-4">
                   Your cart is empty

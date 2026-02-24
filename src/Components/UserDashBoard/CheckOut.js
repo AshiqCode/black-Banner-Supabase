@@ -4,54 +4,115 @@ import Loading from "../DashBoard/Loading";
 import NavBar from "./NavBar";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import supabase from "../../config/SupaBaseClient";
 
 const Checkout = () => {
   const [cartProducts, setCartProducts] = useState([]);
   const [orderedProducts, setOrderedProducts] = useState([]);
+  const [products, setProducts] = useState(null);
+  const [productIds, setProductIds] = useState(null);
+  const [orderInfo, setOrderInfo] = useState(null);
   const navigate = useNavigate();
   const userId = localStorage.getItem("user");
+  const [data, setData] = useState(null);
   //   console.log(userId);
-  const { data, setData, Ispending } = useFetch(
-    `http://localhost:3000/users/${userId}`
-  );
+  // const { data, setData, Ispending } = useFetch(
+  //   `http://localhost:3000/users/${userId}`
+  // );
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .eq("id", userId)
+        .single();
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setData(data);
+      }
+    };
+    datafetch();
+  }, [userId]);
 
-  const userProvince = data.Province;
-  const userCity = data.City;
-  const userStreet = data.Street;
-  const userAddress = data.Address;
-  const userNumber = data.Number;
+  const userProvince = data?.province;
+  const userCity = data?.city;
+  const userStreet = data?.street;
+  const userAddress = data?.address;
+  const userNumber = data?.number;
   //   console.log(userProvince, userCity, userStreet, userAddress);
 
-  const cart = data.cart;
+  // const cart = data.cart;
   //   console.log(cart);
 
-  useEffect(() => {
-    if (cart && cartProducts.length === 0) {
-      cart.forEach((product) => {
-        fetch(`http://localhost:3000/products/${product.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            setCartProducts((prev) => [
-              ...prev,
-              { ...json, quantity: product.quantity },
-            ]);
-            setOrderedProducts((prev) => [
-              ...prev,
-              { id: product.id, quantity: product.Quantity },
-            ]);
-          });
-      });
-    }
-  }, [cart]);
+  // useEffect(() => {
+  //   if (cart && cartProducts.length === 0) {
+  //     cart.forEach((product) => {
+  //       fetch(`http://localhost:3000/products/${product.id}`)
+  //         .then((res) => res.json())
+  //         .then((json) => {
+  //           setCartProducts((prev) => [
+  //             ...prev,
+  //             { ...json, quantity: product.quantity },
+  //           ]);
+  //           setOrderedProducts((prev) => [
+  //             ...prev,
+  //             { id: product.id, quantity: product.Quantity },
+  //           ]);
+  //         });
+  //     });
+  //   }
+  // }, [cart]);
 
   //   console.log(cartProducts, "cartproducts");
 
-  const subTotal = cartProducts.reduce(
-    (sum, product) => sum + product.price,
-    0
-  );
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("cart")
+        .select()
+        .eq("userId", userId);
 
-  const shipping = cartProducts.length * 4;
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        // console.log(data);
+        const ids = data.map((item) => item.productId);
+        setProductIds(ids);
+        setOrderInfo(data);
+      }
+    };
+    datafetch();
+  }, [userId]);
+  console.log(productIds);
+  console.log(orderInfo);
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .in("id", productIds);
+
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setProducts(data);
+      }
+    };
+
+    datafetch();
+  }, [productIds]);
+  console.log(products);
+
+  const subTotal = products?.reduce((sum, product) => sum + product.price, 0);
+
+  const shipping = products?.length * 4;
   const totalPrice = subTotal + shipping + cartProducts.length * 2;
 
   const orderData = {
@@ -64,81 +125,106 @@ const Checkout = () => {
     userId: userId,
   };
 
-  const placeOrder = () => {
-    console.log("Order Placed");
-    console.log(orderData);
+  const delivery_address = userProvince + userCity + userStreet + userAddress;
+  const placeOrder = async () => {
+    // console.log("Order Placed");
+    // console.log(orderData);
 
-    fetch("http://localhost:3000/orders", {
-      method: "POST",
-      body: JSON.stringify(orderData),
-    });
-    const user = {
-      Name: data.Name,
-      Email: data.Email,
-      Password: data.Password,
-      Number: data.Number,
-      Province: data.Province,
-      City: data.City,
-      Street: data.Street,
-      Address: data.Address,
-    };
-    console.log(user);
+    // fetch("http://localhost:3000/orders", {
+    //   method: "POST",
+    //   body: JSON.stringify(orderData),
+    // });
+    // const user = {
+    //   Name: data.Name,
+    //   Email: data.Email,
+    //   Password: data.Password,
+    //   Number: data.Number,
+    //   Province: data.Province,
+    //   City: data.City,
+    //   Street: data.Street,
+    //   Address: data.Address,
+    // };
+    // console.log(user);
 
-    fetch(`http://localhost:3000/users/${userId}`, {
-      method: "PUT",
-      body: JSON.stringify(user),
-    });
+    // fetch(`http://localhost:3000/users/${userId}`, {
+    //   method: "PUT",
+    //   body: JSON.stringify(user),
+    // });
+
+    const { data: orderInsertData, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        userId,
+        subtotal: subTotal,
+        shipping,
+        total: totalPrice,
+        delivery_address,
+        status: "pending",
+      })
+      .select()
+      .single();
+
+    const orderProducts = orderInfo.map((item) => ({
+      order_id: orderInsertData.id, // link to the order
+      quantity: item.quantity,
+      product_id: item.productId,
+    }));
+
+    const { data: orderProductData, error: productError } = await supabase
+      .from("order_products")
+      .insert(orderProducts)
+      .select();
+
     navigate("/ViewOrder");
+    const { data, error } = await supabase
+      .from("cart")
+      .delete()
+      .eq("userId", userId);
   };
+  console.log(userId);
 
   // var stockIssue = true;
-  const handleValidation = () => {
-    return new Promise((resolve, reject) => {
-      let stockIssue = true;
+  // const handleValidation = () => {
+  //   return new Promise((resolve, reject) => {
+  //     let stockIssue = true;
 
-      if (!cart || cart.length === 0) {
-        resolve(true);
-        return;
-      }
+  //     if (!cart || cart.length === 0) {
+  //       resolve(true);
+  //       return;
+  //     }
 
-      const fetchPromises = cart.map((product) =>
-        fetch(`http://localhost:3000/products/${product.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            const item = { ...json, quantity: product.Quantity };
-            // console.log(item);
+  //     const fetchPromises = cart.map((product) =>
+  //       fetch(`http://localhost:3000/products/${product.id}`)
+  //         .then((res) => res.json())
+  //         .then((json) => {
+  //           const item = { ...json, quantity: product.Quantity };
+  //           // console.log(item);
 
-            if (item.quantity > item.StockQuantity) {
-              if (item.StockQuantity === 0) {
-                toast.warning(`Item ${item.Name} is out of stock`);
-              } else {
-                toast.warning(
-                  `Available quantity of ${item.Name} is ${item.StockQuantity}`
-                );
-              }
-              stockIssue = false;
-            }
-          })
-          .catch(() => {
-            stockIssue = false;
-          })
-      );
+  //           if (item.quantity > item.StockQuantity) {
+  //             if (item.StockQuantity === 0) {
+  //               toast.warning(`Item ${item.Name} is out of stock`);
+  //             } else {
+  //               toast.warning(
+  //                 `Available quantity of ${item.Name} is ${item.StockQuantity}`
+  //               );
+  //             }
+  //             stockIssue = false;
+  //           }
+  //         })
+  //         .catch(() => {
+  //           stockIssue = false;
+  //         })
+  //     );
 
-      Promise.all(fetchPromises)
-        .then(() => resolve(stockIssue))
-        .catch(reject);
-    });
-  };
+  //     Promise.all(fetchPromises)
+  //       .then(() => resolve(stockIssue))
+  //       .catch(reject);
+  //   });
+  // };
 
   const orderPlaceHandle = () => {
     if (userAddress && userCity && userProvince && userStreet && userNumber) {
-      handleValidation().then((isValid) => {
-        if (isValid) {
-          placeOrder();
-        } else {
-          console.log("err");
-        }
-      });
+      placeOrder();
     } else {
       toast.warning("Add your delivery address");
       navigate(`/Profile/${userId}`);
@@ -149,14 +235,14 @@ const Checkout = () => {
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       {/* Navbar */}
       <NavBar />
-      {Ispending && (
+      {!data && (
         <div className="flex justify-center my-10">
           <Loading />
         </div>
       )}
       {/* Main Content */}
 
-      {!Ispending && (
+      {data && (
         <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-12 bg-gray-50">
           <h2 className="text-3xl font-bold mb-10 text-gray-900">Checkout</h2>
 
@@ -171,7 +257,7 @@ const Checkout = () => {
 
                 <div className="bg-gray-100/60 p-6 rounded-xl">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {cartProducts.map((product) => (
+                    {products?.map((product) => (
                       <div
                         key={product.id}
                         className="flex gap-4 bg-white p-4 rounded-xl border border-gray-200 hover:shadow-md transition"
@@ -179,7 +265,7 @@ const Checkout = () => {
                         {/* Product Image */}
                         <img
                           src={product.image}
-                          alt={product.Name}
+                          alt={product.productName}
                           className="w-24 h-24 object-cover rounded-lg border"
                         />
 
@@ -187,10 +273,7 @@ const Checkout = () => {
                         <div className="flex flex-col justify-between flex-1">
                           <div>
                             <p className="text-sm font-semibold text-gray-900">
-                              {product.Name}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Quantity: {product.quantity}
+                              {product.productName}
                             </p>
                           </div>
 

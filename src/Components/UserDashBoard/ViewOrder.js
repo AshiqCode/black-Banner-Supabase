@@ -1,18 +1,37 @@
-import { useState } from "react";
-import useFetch from "../../Hooks/usefetch";
+import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import OrderDetails from "./OrderDetails";
+import supabase from "../../config/SupaBaseClient";
 const ViewOrders = () => {
   const user = localStorage.getItem("user");
   const [productId, setProductId] = useState("");
-  const { data, setData } = useFetch("http://localhost:3000/orders");
+  const [data, setData] = useState(null);
+  // const { data, setData } = useFetch("http://localhost:3000/orders");
   const [isPopUp, setIsPopUp] = useState(false);
-  const orders = data.filter((item) => item.userId === user);
+  const orders = data?.filter((item) => item.userId === user);
   const [currentStatus, setCurrentStatus] = useState("");
   const [total, setTotal] = useState("");
   const [currenorderId, setCurrenorderId] = useState("");
 
   // console.log(orders);
+
+  useEffect(() => {
+    const datafetch = async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select()
+        .eq("userId", user);
+
+      if (error) {
+        console.log(error);
+      }
+      if (data) {
+        console.log(data);
+        setData(data);
+      }
+    };
+    datafetch();
+  }, []);
 
   const handleViewDetails = (
     productId,
@@ -30,28 +49,44 @@ const ViewOrders = () => {
   };
   // console.log(productId);
 
-  const statusHandle = (orderId) => {
-    fetch(`http://localhost:3000/orders/${orderId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status: "canceled" }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        setData((prev) =>
-          prev.map((item) =>
-            item.id === json.id ? { ...json, user: item.user } : item
-          )
-        );
-      });
-  };
+  const statusHandle = async (orderId) => {
+    // fetch(`http://localhost:3000/orders/${orderId}`, {
+    //   method: "PATCH",
+    //   body: JSON.stringify({ status: "canceled" }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setData((prev) =>
+    //       prev.map((item) =>
+    //         item.id === json.id ? { ...json, user: item.user } : item
+    //       )
+    //     );
+    //   });
+    console.log(orderId);
 
+    const { data: updatedOrder, error } = await supabase
+      .from("orders")
+      .update({ status: "canceled" })
+      .eq("id", orderId)
+      .select()
+      .single();
+    if (error) {
+      console.log(error);
+    }
+    if (!updatedOrder) return;
+
+    setData((prev) =>
+      prev.map((item) => (item.id === updatedOrder.id ? updatedOrder : item))
+    );
+  };
+  console.log(data);
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       <NavBar />
       <main className="flex-1  mx-auto w-full px-4 sm:px-6 py-12">
         <h2 className="text-3xl font-bold mb-8 text-gray-900">My Orders</h2>
 
-        {orders.length !== 0 && (
+        {data?.length !== 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Left Section: Orders Table */}
             <div className="lg:col-span-2 bg-white rounded-2xl shadow border border-gray-200 overflow-x-auto">
@@ -71,7 +106,7 @@ const ViewOrders = () => {
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-100">
-                  {orders.map((product, index) => (
+                  {data?.map((product, index) => (
                     <tr
                       key={product.id}
                       className="group  hover:bg-gradient-to-r hover:from-indigo-50/40 hover:to-transparent transition-all"
@@ -168,7 +203,7 @@ const ViewOrders = () => {
             </div>
           </div>
         )}
-        {orders.length === 0 && (
+        {data?.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20">
             <h2 className="text-2xl font-semibold mb-4">No Orders Yet</h2>
             <p className="text-gray-500 mb-6">
