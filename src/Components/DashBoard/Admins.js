@@ -34,7 +34,6 @@ const Admins = () => {
     };
     fetchData();
   }, []);
-
   const handleAddAdmin = async () => {
     const { data, error } = await supabase
       .from("users")
