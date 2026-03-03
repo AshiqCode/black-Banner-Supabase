@@ -70,8 +70,8 @@ const ViewOrders = () => {
         .update({"status":statusvaluse})
         .eq("id",orderId)
         setOrders((prevOrders) =>
-    prevOrders.map((order) =>
-      order.id === orderId
+        prevOrders.map((order) =>
+        order.id === orderId
         ? { ...order, status: statusvaluse }
         : order
     )

@@ -151,19 +151,19 @@ const OrderDetails = ({
                     </p>
                   </div>
 
-                  {/* <div className="pt-3 border-t text-sm flex justify-between items-center text-gray-600">
-                    <span>Ordered Quantity</span>
+                  <div className="pt-3 border-t text-sm flex justify-between items-center text-gray-600">
+                    {/* <span>Ordered Quantity</span> */}
 
                     {currentStatus === "delivered" && (
                       <div className="flex items-center gap-3">
                         <span className="font-semibold text-gray-800">
-                          {productId[index].quantity}
+                          {/* {productId[index].quantity} */}
                         </span>
 
                         <button
                           onClick={() => {
                             setReviewPupUp(true);
-                            setcurrentProductId(productId[index].id);
+                            setcurrentProductId(item.id);
                           }}
                           className="text-xs px-2 py-1 border rounded-md text-green-600 border-green-600 hover:bg-green-50"
                         >
@@ -171,7 +171,7 @@ const OrderDetails = ({
                         </button>
                       </div>
                     )}
-                  </div> */}
+                  </div>
                 </div>
               </div>
             ))}

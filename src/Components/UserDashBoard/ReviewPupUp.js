@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
+import supabase from "../../config/SupaBaseClient";
 const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
   const stars = [1, 2, 3, 4, 5];
   const [rating, setRating] = useState("");
@@ -8,21 +8,26 @@ const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
   const user = localStorage.getItem("user");
   const [curretData, setCurretData] = useState();
 
-  useEffect(() => {
-    fetch(`http://localhost:3000/products/${currentProductId}`)
-      .then((res) => res.json())
-      .then((json) => {
-        setCurretData(json);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(`http://localhost:3000/products/${currentProductId}`)
+  //     .then((res) => res.json())
+  //     .then((json) => {
+  //       setCurretData(json);
+  //     });
+  // }, []);
 
-  const addReview = () => {
+  const addReview =async () => {
     const review = {
       userId: user,
       rating: rating,
       reviewMessage: reviewMessage,
       orderId: currenorderId,
     };
+    
+const {data,error}= await supabase
+.from("reviews")
+.insert({userId:user,rating:rating,reviewMessage:reviewMessage,productid:currentProductId})
+
 
     setCurretData((prev) => {});
 
@@ -31,11 +36,16 @@ const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
       reviews: [review, ...(curretData?.reviews || [])],
     };
     console.log(newProduct);
+    console.log(review);
+    console.log(currentProductId);
+    
 
-    fetch(`http://localhost:3000/products/${currentProductId}`, {
-      method: "PUT",
-      body: JSON.stringify(newProduct),
-    });
+    // fetch(`http://localhost:3000/products/${currentProductId}`, {
+    //   method: "PUT",
+    //   body: JSON.stringify(newProduct),
+    // });
+
+    
     toast.success("Review Added successfully");
     // console.log(review);
     // console.log(curretData);
