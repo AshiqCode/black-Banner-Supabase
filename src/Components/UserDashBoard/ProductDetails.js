@@ -35,7 +35,7 @@ const ProductDetails = () => {
       const { data, error } = await supabase
         .from("cart")
         .select()
-        .match({ userId: user, productId: param }).maybeSingle;
+        .match({ userId: user, productId: param }).maybeSingle();
       // .eq("userId", user)
       // .eq("productId", param);
 
@@ -73,39 +73,51 @@ const ProductDetails = () => {
 
   const navigate = useNavigate();
   const AddToCartHandle = async () => {
-    if (user) {
-      console.log(data);
-      if (currentCart) {
-        if (currentCart.quantity < data.stockQuantity) {
-          const { data } = await supabase
-            .from("cart")
-            .update({
-              quantity: currentCart.quantity + 1,
-            })
-            .eq("id", currentCart.id)
-            .select();
+  if (!user) {
+    toast.warning("Your cart awaits, just log in!");
+    navigate("/login");
+    return;
+  }
 
-          toast.success("Product updated successfully");
-          setCurrentCart(data);
-        } else {
-          toast.warning(
-            `You can't place more than ${data.stockQuantity} items.`
-          );
-        }
-      } else {
-        const { data } = await supabase
-          .from("cart")
-          .insert({ userId: user, productId: param, quantity: 1 })
-          .select();
+  console.log(data);
 
-        toast.success("Product Added successfully");
-        setCurrentCart(data);
+  if (currentCart) {
+    if (currentCart.quantity < data.stockQuantity) {
+      const { data: updatedCart, error } = await supabase
+        .from("cart")
+        .update({
+          quantity: currentCart.quantity + 1,
+        })
+        .eq("id", currentCart.id)
+        .select();
+
+      if (error) {
+        toast.error(error.message);
+        return;
       }
+
+      toast.success("Product updated successfully");
+      setCurrentCart(updatedCart[0]);
     } else {
-      toast.warning("Your cart awaits, just log in!");
-      navigate("/login");
+      toast.warning(
+        `You can't place more than ${data.stockQuantity} items.`
+      );
     }
-  };
+  } else {
+    const { data: insertedCart, error } = await supabase
+      .from("cart")
+      .insert({ userId: user, productId: param, quantity: 1 })
+      .select();
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.success("Product Added successfully");
+    setCurrentCart(insertedCart[0]);
+  }
+};
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
