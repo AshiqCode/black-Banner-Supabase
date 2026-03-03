@@ -54,20 +54,34 @@ const UsersOverView = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
-      <header className="h-16 bg-white shadow sticky top-0 z-50">
-        <div className="h-full flex items-center px-4">
+  <header className="flex justify-between items-center px-4 sm:px-8 py-4 bg-white border-b border-gray-200">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition mr-3"
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition"
             aria-label="Open sidebar"
           >
             <span className="text-xl leading-none">☰</span>
           </button>
-          <div className="flex-1">
-            <Navbar />
-          </div>
+
+          <h1 className="text-3xl font-bold tracking-tight select-none text-gray-900">
+            Black<span className="text-yellow-500">Banner</span>
+          </h1>
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={() => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("type");
+            navigate("/");
+          }}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 hover:shadow-md hover:text-yellow-500 transition-all duration-200"
+        >
+          Log Out
+        </button>
       </header>
 
       {/* Sidebar + Main */}

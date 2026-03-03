@@ -21,11 +21,12 @@ const Products = () => {
   }, []);
 
   const urls = [
-    {
-      img: "https://www.eurokidsindia.com/blog/wp-content/uploads/2023/12/names-of-electronic-devices-in-english.jpg",
-    },
+    
     {
       img: "https://t4.ftcdn.net/jpg/08/73/34/47/240_F_873344730_GR5zxbekiofYCbcgyLLXOUHVxGKxwtsg.jpg",
+    },
+    {
+      img: "https://www.eurokidsindia.com/blog/wp-content/uploads/2023/12/names-of-electronic-devices-in-english.jpg",
     },
     {
       img: "https://www.shutterstock.com/image-illustration/group-home-appliances-consumer-electronics-600nw-2451385301.jpg",
