@@ -63,21 +63,32 @@ const ViewOrders = () => {
   //   });
   // }, [data]);
 
-  const statusHandle = (statusvaluse, orderId) => {
+  const statusHandle = async (statusvaluse, orderId) => {
     console.log(statusvaluse, orderId);
+    const { data, error } = await supabase
+        .from('orders')
+        .update({"status":statusvaluse})
+        .eq("id",orderId)
+        setOrders((prevOrders) =>
+    prevOrders.map((order) =>
+      order.id === orderId
+        ? { ...order, status: statusvaluse }
+        : order
+    )
+  );
 
-    fetch(`http://localhost:3000/orders/${orderId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status: statusvaluse }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        setData((prev) =>
-          prev.map((item) =>
-            item.id === json.id ? { ...json, user: item.user } : item
-          )
-        );
-      });
+    // fetch(`http://localhost:3000/orders/${orderId}`, {
+    //   method: "PATCH",
+    //   body: JSON.stringify({ status: statusvaluse }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     setData((prev) =>
+    //       prev.map((item) =>
+    //         item.id === json.id ? { ...json, user: item.user } : item
+    //       )
+    //     );
+    //   });
   };
 
 
@@ -115,7 +126,9 @@ const ViewOrders = () => {
               description
             )
           )
-        `);
+        `)
+        .order("id", { ascending: true })
+        ;
 
       if (error) {
         console.error('Error fetching orders:', error);
@@ -212,7 +225,7 @@ const ViewOrders = () => {
                   Products:
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {order?.order_products?.map((productDetails) => {
+                  {order?.order_products?.map((productDetails,index) => {
 
                     
                     
@@ -220,7 +233,7 @@ const ViewOrders = () => {
 
                     return (
                       <div
-                        key={productDetails.id}
+                        key={index}
                         className="flex items-center bg-gray-50 rounded-lg p-3 shadow-sm hover:shadow-md transition"
                       >
                         <img
