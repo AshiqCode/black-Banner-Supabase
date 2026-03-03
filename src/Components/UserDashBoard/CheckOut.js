@@ -44,6 +44,7 @@ const Checkout = () => {
   const userNumber = data?.number;
   //   console.log(userProvince, userCity, userStreet, userAddress);
 
+
   // const cart = data.cart;
   //   console.log(cart);
 
@@ -90,6 +91,14 @@ const Checkout = () => {
   console.log(productIds);
   console.log(orderInfo);
 
+const productsWithQuantity = products?.map((product) => {
+  const item = orderInfo?.find((i) => i.productId === product.id);
+  return {
+    ...product,
+    quantity: item?.quantity || 1,
+  };
+});
+
   useEffect(() => {
     const datafetch = async () => {
       const { data, error } = await supabase
@@ -110,8 +119,10 @@ const Checkout = () => {
   }, [productIds]);
   console.log(products);
 
-  const subTotal = products?.reduce((sum, product) => sum + product.price, 0);
-
+ const subTotal = productsWithQuantity?.reduce(
+  (sum, product) => sum + product.price * product.quantity,
+  0
+);
   const shipping = products?.length * 4;
   const totalPrice = subTotal + shipping + cartProducts.length * 2;
 
