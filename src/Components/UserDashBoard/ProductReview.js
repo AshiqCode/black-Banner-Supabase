@@ -1,48 +1,75 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect,  useState } from "react";
+import supabase from "../../config/SupaBaseClient";
 
 const ProductReview = ({ ProductId }) => {
   const [data, setData] = useState({});
   const [Ispending, setIspending] = useState(false);
   const [error, setError] = useState(false);
+  const [reviews,setReviews]=useState(null)
 
   const [usersIds, setUsersIds] = useState([]);
   const [userData, setUserData] = useState([]);
-  useEffect(() => {
-    fetch(`http://localhost:3000/products/${ProductId}`)
-      .then((res) => res.json())
-      .then((order) => {
-        setData(order);
-        order.reviews.map((review, index) => {
-          fetch(`http://localhost:3000/users/${review.userId}`)
-            .then((res) => res.json())
-            .then((user) => {
-              //spread data
-              //find review
-              //append user info
-              setData((prev) => ({
-                ...prev,
-                reviews: prev.reviews.map((r) => {
-                  if (r.userId === review.userId) {
-                    return { ...r, user };
-                  } else {
-                    return r;
-                  }
-                }),
-              }));
-            });
-        });
-      })
+  // useEffect(() => {
+  //   fetch(`http://localhost:3000/products/${ProductId}`)
+  //     .then((res) => res.json())
+  //     .then((order) => {
+  //       setData(order);
+  //       order.reviews.map((review, index) => {
+  //         fetch(`http://localhost:3000/users/${review.userId}`)
+  //           .then((res) => res.json())
+  //           .then((user) => {
+  //             //spread data
+  //             //find review
+  //             //append user info
+  //             setData((prev) => ({
+  //               ...prev,
+  //               reviews: prev.reviews.map((r) => {
+  //                 if (r.userId === review.userId) {
+  //                   return { ...r, user };
+  //                 } else {
+  //                   return r;
+  //                 }
+  //               }),
+  //             }));
+  //           });
+  //       });
+  //     })
 
-      .catch((err) => {
-        console.log("TEST", err);
-        setError(true);
-        setIspending(false);
-      });
-  }, []);
+  //     .catch((err) => {
+  //       console.log("TEST", err);
+  //       setError(true);
+  //       setIspending(false);
+  //     });
+  // }, []);
 
-  const reviews = data.reviews;
+useEffect(()=>{
+const fetchdata= async()=>{
+  console.log("data")
 
-  console.log(data);
+  const {data:review,error}=await supabase
+  .from("reviews")
+  
+  .select(`
+    id,
+    rating,
+    reviewMessage,
+    users(
+    name
+    )
+
+    `)
+    .eq("productid",ProductId)
+    
+  console.log(review);
+  setReviews(review)
+  
+  
+}
+fetchdata()
+},[])
+
+  // const reviews = data.reviews;
+  // console.log(data);
 
   // console.log(reviews);
   // console.log(ProductId);
@@ -81,7 +108,7 @@ const ProductReview = ({ ProductId }) => {
             >
               <div className="flex items-center justify-between mb-2">
                 <p className="font-medium text-gray-900">
-                  {review?.user?.Name}
+                  {review?.users?.name}
                 </p>
                 <p className="text-sm font-semibold text-yellow-500">
                   ⭐ {review.rating}
