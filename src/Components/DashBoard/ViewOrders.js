@@ -107,8 +107,9 @@ const ViewOrders = () => {
           ),
           order_products (
             quantity,
-            products (
+            ...products (
               id,
+              image,
               productName,
               price,
               description
@@ -120,13 +121,14 @@ const ViewOrders = () => {
         console.error('Error fetching orders:', error);
       } else {
         setOrders(data);
+        console.log(data);
+        
       }
     }
 
     fetchOrders();
   }, []);
 
-  console.log(data);
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
@@ -147,7 +149,7 @@ const ViewOrders = () => {
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Orders</h1>
 
           <div className="space-y-6">
-            {data.map((order) => (
+            {orders?.map((order) => (
               <div
                 key={order.id}
                 className="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition-shadow duration-300"
@@ -158,9 +160,9 @@ const ViewOrders = () => {
                     Order #{order.id}
                   </h2>
                   <div className="flex flex-col sm:flex-row sm:gap-4 text-gray-500 text-sm">
-                    <span>User: {order.user.Name}</span>
-                    <span>Email: {order.user.Email}</span>
-                    <span>Number: {order.user.Number}</span>
+                    <span>User: {order.users.name}</span>
+                    <span>Email: {order.users.email}</span>
+                    <span>Number: {order.users.number}</span>
                   </div>
                 </div>
 
@@ -171,7 +173,7 @@ const ViewOrders = () => {
                   </p>
                   <p>
                     <span className="font-semibold">Delivery:</span>{" "}
-                    {order.deliveryAddress}
+                    {order?.delivery_address}
                   </p>
                 </div>
 
@@ -210,15 +212,15 @@ const ViewOrders = () => {
                   Products:
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {order.products.map((item) => {
-                    const productDetails = orderedProducts.find(
-                      (p) => p.id === item.id
-                    );
+                  {order?.order_products?.map((productDetails) => {
+
+                    
+                    
                     if (!productDetails) return null;
 
                     return (
                       <div
-                        key={item.id}
+                        key={productDetails.id}
                         className="flex items-center bg-gray-50 rounded-lg p-3 shadow-sm hover:shadow-md transition"
                       >
                         <img
@@ -238,7 +240,7 @@ const ViewOrders = () => {
                           </p>
                           <p className="text-gray-500">
                             Quantity:{" "}
-                            {item.quantity || productDetails.quantity || 1}
+                            {productDetails.quantity || productDetails.quantity || 1}
                           </p>
                         </div>
                       </div>
