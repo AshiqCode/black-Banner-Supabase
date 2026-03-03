@@ -15,6 +15,13 @@
       "type": "admin"
     },
     {
+      "id": "620d",
+      "Name": "Dolore ",
+      "Email": "bihon@mailinator.com",
+      "Password": "Aut enim mollit null",
+      "type": "admin"
+    },
+    {
       "id": "e512",
       "Name": "Recusandae Deleniti",
       "Email": "hyxuno@mailinator.com",
@@ -297,7 +304,7 @@
       "shipping": 8,
       "total": 137,
       "deliveryAddress": "Deserunt sunt quas pProident voluptas eExplicabo Est conseDeserunt qui molesti",
-      "status": "pending",
+      "status": "confirmed",
       "userId": "620d"
     },
     {

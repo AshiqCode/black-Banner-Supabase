@@ -3,13 +3,14 @@ import useFetch from "../../Hooks/usefetch";
 import { toast } from "react-toastify";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-
+import supabase from "../../config/SupaBaseClient";
 const ViewOrders = () => {
   // const { data, setData, Ispending } = useFetch("http://localhost:3000/orders");
 
   const [orderedProducts, setOrderedProducts] = useState([]);
   const [status, setStatus] = useState("");
   const [data, setData] = useState([]);
+  const [orders, setOrders] = useState(null);
   const statusOptions = [
     "pending",
     "canceled",
@@ -18,49 +19,49 @@ const ViewOrders = () => {
     "delivered",
   ];
   // console.log(data);
-  useEffect(() => {
-    const fetchOrdersWithUsers = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/orders");
-        const orders = await res.json();
+  // useEffect(() => {
+  //   const fetchOrdersWithUsers = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:3000/orders");
+  //       const orders = await res.json();
 
-        const ordersWithUsers = await Promise.all(
-          orders.map(async (order) => {
-            const userRes = await fetch(
-              `http://localhost:3000/users/${order.userId}`
-            );
-            const user = await userRes.json();
+  //       const ordersWithUsers = await Promise.all(
+  //         orders.map(async (order) => {
+  //           const userRes = await fetch(
+  //             `http://localhost:3000/users/${order.userId}`
+  //           );
+  //           const user = await userRes.json();
 
-            return {
-              ...order,
-              user,
-            };
-          })
-        );
+  //           return {
+  //             ...order,
+  //             user,
+  //           };
+  //         })
+  //       );
 
-        setData(ordersWithUsers);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  //       setData(ordersWithUsers);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-    fetchOrdersWithUsers();
-  }, []);
+  //   fetchOrdersWithUsers();
+  // }, []);
 
-  useEffect(() => {
-    data.map((product) => {
-      product.products.map((item) => {
-        fetch(`http://localhost:3000/products/${item.id}`)
-          .then((res) => res.json())
-          .then((json) => {
-            setOrderedProducts((prev) => [
-              ...prev,
-              { ...json, quantity: product.Quantity },
-            ]);
-          });
-      });
-    });
-  }, [data]);
+  // useEffect(() => {
+  //   data.map((product) => {
+  //     product.products.map((item) => {
+  //       fetch(`http://localhost:3000/products/${item.id}`)
+  //         .then((res) => res.json())
+  //         .then((json) => {
+  //           setOrderedProducts((prev) => [
+  //             ...prev,
+  //             { ...json, quantity: product.Quantity },
+  //           ]);
+  //         });
+  //     });
+  //   });
+  // }, [data]);
 
   const statusHandle = (statusvaluse, orderId) => {
     console.log(statusvaluse, orderId);
@@ -78,6 +79,52 @@ const ViewOrders = () => {
         );
       });
   };
+
+
+
+  useEffect(() => {
+    async function fetchOrders() {
+      const { data, error } = await supabase
+        .from('orders')
+        .select(`
+          id,
+          created_at,
+          subtotal,
+          shipping,
+          total,
+          delivery_address,
+          status,
+          users (
+            id,
+            name,
+            email,
+            number,
+            province,
+            city,
+            street,
+            address,
+            type
+          ),
+          order_products (
+            quantity,
+            products (
+              id,
+              productName,
+              price,
+              description
+            )
+          )
+        `);
+
+      if (error) {
+        console.error('Error fetching orders:', error);
+      } else {
+        setOrders(data);
+      }
+    }
+
+    fetchOrders();
+  }, []);
 
   console.log(data);
 
