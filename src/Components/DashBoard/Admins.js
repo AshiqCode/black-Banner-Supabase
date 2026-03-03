@@ -7,8 +7,10 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
 import { type } from "@testing-library/user-event/dist/type";
+import { useNavigate } from "react-router-dom";
 
 const Admins = () => {
+  const navigate = useNavigate();
   const [adminData, setAdminData] = useState([]);
   const [users, setUsers] = useState();
   const [isaddAdmin, setIsaddAdmin] = useState(false);
@@ -21,6 +23,7 @@ const Admins = () => {
   const endIndex = startIndex + pageSize;
   const currentAdmins = adminData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(adminData.length / pageSize);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,18 +57,61 @@ const Admins = () => {
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
       <header className="h-16 bg-white shadow sticky top-0 z-50">
-        <Navbar />
+        <div className="h-full flex items-center px-4">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition mr-3"
+            aria-label="Open sidebar"
+          >
+            <span className="text-xl leading-none">☰</span>
+          </button>
+          <div className="flex-1">
+            <Navbar />
+          </div>
+        </div>
       </header>
 
-      {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Sidebar + Main */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile overlay */}
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className={[
+            "md:hidden fixed inset-0 z-40 bg-black/40 transition-opacity",
+            sidebarOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
+          ].join(" ")}
+        />
+
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+        <aside
+          className={[
+            "w-64 bg-white border-r border-gray-200 ",
+            "md:static md:translate-x-0 md:z-auto",
+            "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          ].join(" ")}
+        >
+          <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+            <span className="font-semibold text-gray-900">Menu</span>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition"
+              aria-label="Close sidebar"
+            >
+              <span className="text-xl leading-none">✕</span>
+            </button>
+          </div>
           <Sidebar />
         </aside>
 
+
+
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           {/* Page Header */}
           <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
@@ -126,7 +172,7 @@ const Admins = () => {
             </table>
 
             {/* Pagination */}
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4 flex-wrap">
               <button
                 disabled={currentPage === 0}
                 onClick={() => setCurrentPage(currentPage - 1)}
@@ -168,7 +214,7 @@ const Admins = () => {
           {/* Add Admin Modal */}
           {isaddAdmin && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg w-full max-w-md p-6 relative">
+              <div className="bg-white rounded-lg w-full max-w-md p-6 relative mx-4">
                 <button
                   className="absolute top-3 right-3 text-xl"
                   onClick={() => setIsaddAdmin(false)}

@@ -5,10 +5,12 @@ import DeletePopUp from "./DeletePopUp";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
+import { useNavigate } from "react-router-dom";
 
 const UsersOverView = () => {
   const [data, setData] = useState();
 
+  const navigate = useNavigate();
   const [usersData, setUsersData] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isDeletePopUp, setIsDeletePopUp] = useState(false);
@@ -17,6 +19,7 @@ const UsersOverView = () => {
   const startIndex = currentPage * pageSize;
   const endIndex = startIndex + pageSize;
   const currentUsers = usersData.slice(startIndex, endIndex);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,18 +55,59 @@ const UsersOverView = () => {
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
       <header className="h-16 bg-white shadow sticky top-0 z-50">
-        <Navbar />
+        <div className="h-full flex items-center px-4">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition mr-3"
+            aria-label="Open sidebar"
+          >
+            <span className="text-xl leading-none">☰</span>
+          </button>
+          <div className="flex-1">
+            <Navbar />
+          </div>
+        </div>
       </header>
 
       {/* Sidebar + Main */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile overlay */}
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className={[
+            "md:hidden fixed inset-0 z-40 bg-black/40 transition-opacity",
+            sidebarOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
+          ].join(" ")}
+        />
+
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+        <aside
+          className={[
+            "w-64 bg-white border-r border-gray-200 ",
+            "md:static md:translate-x-0 md:z-auto",
+            "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          ].join(" ")}
+        >
+          <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+            <span className="font-semibold text-gray-900">Menu</span>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition"
+              aria-label="Close sidebar"
+            >
+              <span className="text-xl leading-none">✕</span>
+            </button>
+          </div>
           <Sidebar />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           {/* Page Header */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900">
@@ -129,7 +173,7 @@ const UsersOverView = () => {
               </table>
 
               {/* Pagination */}
-              <div className="flex justify-center gap-2 mt-4">
+              <div className="flex justify-center gap-2 mt-4 flex-wrap">
                 <button
                   disabled={currentPage === 0}
                   onClick={() => setCurrentPage(currentPage - 1)}

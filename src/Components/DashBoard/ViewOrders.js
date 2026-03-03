@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
+import { useNavigate } from "react-router-dom";
 const ViewOrders = () => {
   // const { data, setData, Ispending } = useFetch("http://localhost:3000/orders");
 
@@ -11,6 +12,7 @@ const ViewOrders = () => {
   const [status, setStatus] = useState("");
   const [data, setData] = useState([]);
   const [orders, setOrders] = useState(null);
+  const navigate = useNavigate();
   const statusOptions = [
     "pending",
     "canceled",
@@ -18,6 +20,8 @@ const ViewOrders = () => {
     "shipped",
     "delivered",
   ];
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   // console.log(data);
   // useEffect(() => {
   //   const fetchOrdersWithUsers = async () => {
@@ -66,16 +70,14 @@ const ViewOrders = () => {
   const statusHandle = async (statusvaluse, orderId) => {
     console.log(statusvaluse, orderId);
     const { data, error } = await supabase
-        .from('orders')
-        .update({"status":statusvaluse})
-        .eq("id",orderId)
-        setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-        order.id === orderId
-        ? { ...order, status: statusvaluse }
-        : order
-    )
-  );
+      .from("orders")
+      .update({ status: statusvaluse })
+      .eq("id", orderId);
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === orderId ? { ...order, status: statusvaluse } : order
+      )
+    );
 
     // fetch(`http://localhost:3000/orders/${orderId}`, {
     //   method: "PATCH",
@@ -91,13 +93,12 @@ const ViewOrders = () => {
     //   });
   };
 
-
-
   useEffect(() => {
     async function fetchOrders() {
       const { data, error } = await supabase
-        .from('orders')
-        .select(`
+        .from("orders")
+        .select(
+          `
           id,
           created_at,
           subtotal,
@@ -126,39 +127,92 @@ const ViewOrders = () => {
               description
             )
           )
-        `)
-        .order("id", { ascending: true })
-        ;
+        `
+        )
+        .order("id", { ascending: true });
 
       if (error) {
-        console.error('Error fetching orders:', error);
+        console.error("Error fetching orders:", error);
       } else {
         setOrders(data);
         console.log(data);
-        
       }
     }
 
     fetchOrders();
   }, []);
 
-
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
-      <header className="h-16 bg-white shadow sticky top-0 z-50">
-        <Navbar />
+     <header className="flex justify-between items-center px-4 sm:px-8 py-4 bg-white border-b border-gray-200">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition"
+            aria-label="Open sidebar"
+          >
+            <span className="text-xl leading-none">☰</span>
+          </button>
+
+          <h1 className="text-3xl font-bold tracking-tight select-none text-gray-900">
+            Black<span className="text-yellow-500">Banner</span>
+          </h1>
+        </div>
+
+        {/* Logout */}
+        <button
+          onClick={() => {
+            localStorage.removeItem("user");
+            localStorage.removeItem("type");
+            navigate("/");
+          }}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 hover:shadow-md hover:text-yellow-500 transition-all duration-200"
+        >
+          Log Out
+        </button>
       </header>
 
       {/* Sidebar + Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile overlay */}
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className={[
+            "md:hidden fixed inset-0 z-40 bg-black/40 transition-opacity",
+            sidebarOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
+          ].join(" ")}
+        />
+
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+        <aside
+          className={[
+            "w-64 bg-white border-r border-gray-200 ",
+            "md:static md:translate-x-0 md:z-auto",
+            "fixed inset-y-0 left-0 z-50 transform transition-transform duration-200",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+          ].join(" ")}
+        >
+          <div className="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
+            <span className="font-semibold text-gray-900">Menu</span>
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(false)}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition"
+              aria-label="Close sidebar"
+            >
+              <span className="text-xl leading-none">✕</span>
+            </button>
+          </div>
           <Sidebar />
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Orders</h1>
 
           <div className="space-y-6">
@@ -206,9 +260,7 @@ const ViewOrders = () => {
                   >
                     {statusOptions
                       .filter((status) => {
-                        const currentIndex = statusOptions.indexOf(
-                          order.status
-                        );
+                        const currentIndex = statusOptions.indexOf(order.status);
                         const optionIndex = statusOptions.indexOf(status);
                         return optionIndex >= currentIndex;
                       })
@@ -225,10 +277,7 @@ const ViewOrders = () => {
                   Products:
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {order?.order_products?.map((productDetails,index) => {
-
-                    
-                    
+                  {order?.order_products?.map((productDetails, index) => {
                     if (!productDetails) return null;
 
                     return (
@@ -253,7 +302,9 @@ const ViewOrders = () => {
                           </p>
                           <p className="text-gray-500">
                             Quantity:{" "}
-                            {productDetails.quantity || productDetails.quantity || 1}
+                            {productDetails.quantity ||
+                              productDetails.quantity ||
+                              1}
                           </p>
                         </div>
                       </div>
