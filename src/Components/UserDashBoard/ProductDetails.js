@@ -110,17 +110,17 @@ const ProductDetails = () => {
   return (
     <div className="min-h-screen bg-white text-gray-900">
       {!data && (
-        <div className="flex justify-center my-10">
+        <div className="flex justify-center my-8 sm:my-10 px-4">
           <Loading />
         </div>
       )}
       <NavBar />
 
       {/* Main Content */}
-      <main className="flex justify-center items-start capitalize  px-4 bg-gray-50">
+      <main className="flex justify-center items-start capitalize px-4 sm:px-6 lg:px-8 bg-gray-50 py-6 sm:py-10">
         {data && (
-          <div className="max-w-5xl mt-12 w-full bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
-            <div className="w-full h-96 relative rounded-xl overflow-hidden shadow-md">
+          <div className="max-w-5xl mt-6 sm:mt-12 w-full bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 p-4 sm:p-6">
+            <div className="w-full h-64 sm:h-80 md:h-96 relative rounded-xl overflow-hidden shadow-md">
               <img
                 src={data.image}
                 alt={data.Name}
@@ -128,8 +128,8 @@ const ProductDetails = () => {
               />
             </div>
 
-            <div className="flex flex-col gap-4">
-              <h1 className="text-2xl md:text-3xl font-semibold  text-gray-900">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 break-words">
                 {data.productName}
               </h1>
 
@@ -137,9 +137,11 @@ const ProductDetails = () => {
                 {data.category}
               </span>
 
-              <p className="text-2xl font-bold text-gray-900">${data.price}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">
+                ${data.price}
+              </p>
 
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed text-sm sm:text-base break-words">
                 {data.Description}
               </p>
 
@@ -149,11 +151,11 @@ const ProductDetails = () => {
                 </span>
               )}
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-6">
                 <button
                   disabled={isOutOfStock}
                   onClick={AddToCartHandle}
-                  className={`flex-1 py-3 font-medium rounded-lg transition
+                  className={`w-full sm:flex-1 py-3 font-medium rounded-lg transition
       ${
         isOutOfStock
           ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -166,7 +168,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Extra Info */}
-              <div className="mt-6 text-sm text-gray-500 border-t pt-4">
+              <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500 border-t pt-4">
                 ✔ Secure payment
                 <br />
                 ✔ Fast delivery
@@ -177,7 +179,9 @@ const ProductDetails = () => {
         )}
       </main>
 
-      <ProductReview ProductId={param} />
+      <div className="px-0 sm:px-6 lg:px-8">
+        <ProductReview ProductId={param} />
+      </div>
     </div>
   );
 };

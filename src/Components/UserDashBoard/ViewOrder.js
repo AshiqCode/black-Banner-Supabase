@@ -83,130 +83,138 @@ const ViewOrders = () => {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       <NavBar />
-      <main className="flex-1  mx-auto w-full px-4 sm:px-6 py-12">
-        <h2 className="text-3xl font-bold mb-8 text-gray-900">My Orders</h2>
+      <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-900">
+          My Orders
+        </h2>
 
         {data?.length !== 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-10">
             {/* Left Section: Orders Table */}
-            <div className="lg:col-span-2 bg-white rounded-2xl shadow border border-gray-200 overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">
-                      # Order ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-sm font-semibold text-gray-700 uppercase">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
+            <div className="lg:col-span-2 bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 uppercase">
+                        # Order ID
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 uppercase">
+                        Status
+                      </th>
+                      <th className="px-4 sm:px-6 py-3 text-right text-xs sm:text-sm font-semibold text-gray-700 uppercase">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
 
-                <tbody className="bg-white divide-y divide-gray-100">
-                  {data?.map((product, index) => (
-                    <tr
-                      key={product.id}
-                      className="group  hover:bg-gradient-to-r hover:from-indigo-50/40 hover:to-transparent transition-all"
-                    >
-                      <td className="px-6 py-5">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900">
-                            Order #{product.id}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            Tap to inspect details
-                          </span>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-5">
-                        {(() => {
-                          const statusStyles = {
-                            pending: {
-                              bg: "bg-amber-100",
-                              text: "text-amber-800",
-                              dot: "bg-amber-500",
-                            },
-                            shipped: {
-                              bg: "bg-blue-100",
-                              text: "text-blue-800",
-                              dot: "bg-blue-500",
-                            },
-                            delivered: {
-                              bg: "bg-green-100",
-                              text: "text-green-800",
-                              dot: "bg-green-500",
-                            },
-                          };
-
-                          const style = statusStyles[product.status] || {
-                            bg: "bg-gray-100",
-                            text: "text-gray-800",
-                            dot: "bg-gray-500",
-                          };
-
-                          return (
-                            <span
-                              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}
-                            >
-                              <span
-                                className={`w-2 h-2 rounded-full animate-pulse ${style.dot}`}
-                              />
-                              {product.status}
+                  <tbody className="bg-white divide-y divide-gray-100">
+                    {data?.map((product, index) => (
+                      <tr
+                        key={product.id}
+                        className="group hover:bg-gradient-to-r hover:from-indigo-50/40 hover:to-transparent transition-all"
+                      >
+                        <td className="px-4 sm:px-6 py-4 sm:py-5">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-semibold text-gray-900 break-words">
+                              Order #{product.id}
                             </span>
-                          );
-                        })()}
-                      </td>
+                            <span className="text-xs text-gray-400">
+                              Tap to inspect details
+                            </span>
+                          </div>
+                        </td>
 
-                      <td className="px-6 py-5 text-right flex gap-2 justify-end">
-                        {/* Details Button */}
-                        <button
-                          onClick={() =>
-                            handleViewDetails(
-                              product.products,
-                              product.status,
-                              product.total,
-                              product.id
-                            )
-                          }
-                          className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+                        <td className="px-4 sm:px-6 py-4 sm:py-5">
+                          {(() => {
+                            const statusStyles = {
+                              pending: {
+                                bg: "bg-amber-100",
+                                text: "text-amber-800",
+                                dot: "bg-amber-500",
+                              },
+                              shipped: {
+                                bg: "bg-blue-100",
+                                text: "text-blue-800",
+                                dot: "bg-blue-500",
+                              },
+                              delivered: {
+                                bg: "bg-green-100",
+                                text: "text-green-800",
+                                dot: "bg-green-500",
+                              },
+                            };
+
+                            const style = statusStyles[product.status] || {
+                              bg: "bg-gray-100",
+                              text: "text-gray-800",
+                              dot: "bg-gray-500",
+                            };
+
+                            return (
+                              <span
+                                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}
+                              >
+                                <span
+                                  className={`w-2 h-2 rounded-full animate-pulse ${style.dot}`}
+                                />
+                                {product.status}
+                              </span>
+                            );
+                          })()}
+                        </td>
+
+                        <td className="px-4 sm:px-6 py-4 sm:py-5">
+                          <div className="flex flex-col sm:flex-row gap-2 justify-end">
+                            {/* Details Button */}
+                            <button
+                              onClick={() =>
+                                handleViewDetails(
+                                  product.products,
+                                  product.status,
+                                  product.total,
+                                  product.id
+                                )
+                              }
+                              className="relative inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium
                text-indigo-600 bg-indigo-50 hover:bg-indigo-600 hover:text-white
                transition-all duration-300 overflow-hidden"
-                        >
-                          <span className="z-10">Details</span>
-                          <span className="z-10 transform group-hover:translate-x-1 transition">
-                            ➜
-                          </span>
-                          <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
-                        </button>
-                        {(product.status === "confirmed" ||
-                          product.status === "pending") && (
-                          <button
-                            onClick={() => {
-                              statusHandle(product.id);
-                            }}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+                            >
+                              <span className="z-10">Details</span>
+                              <span className="z-10 transform group-hover:translate-x-1 transition">
+                                ➜
+                              </span>
+                              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
+                            </button>
+                            {(product.status === "confirmed" ||
+                              product.status === "pending") && (
+                              <button
+                                onClick={() => {
+                                  statusHandle(product.id);
+                                }}
+                                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium
                           text-red-600 bg-red-50 hover:bg-red-600 hover:text-white
                           transition-all duration-300"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                              >
+                                Cancel
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
         {data?.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <h2 className="text-2xl font-semibold mb-4">No Orders Yet</h2>
-            <p className="text-gray-500 mb-6">
+          <div className="flex flex-col items-center justify-center py-14 sm:py-20 px-4 text-center">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
+              No Orders Yet
+            </h2>
+            <p className="text-sm sm:text-base text-gray-500 mb-5 sm:mb-6">
               You haven't placed any orders so far.
             </p>
             <a
@@ -229,8 +237,8 @@ const ViewOrders = () => {
           currenorderId={currenorderId}
         />
       )}
-      <footer className="mt-auto pb-6 text-center text-xs text-gray-600 bg-gray-50">
-        <div className="flex justify-center gap-4 mb-2">
+      <footer className="mt-auto pb-6 text-center text-xs text-gray-600 bg-gray-50 px-4">
+        <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mb-2">
           <span className="text-blue-700 hover:underline cursor-pointer">
             Conditions of Use
           </span>

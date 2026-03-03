@@ -43,73 +43,62 @@ const Products = () => {
 
       {/* Main Content */}
       <main className="flex-1 bg-gray-50 min-h-screen">
-        <div className="relative w-full h-96 mt-10 max-w-4xl mx-auto overflow-hidden rounded-xl shadow-lg">
-          {/* Slider Images Container */}
-          <div className="flex transition-transform duration-300 ease-in-out">
-            {/* Example Images */}
-            <img
-              src={urls[img].img}
-              alt="Slide 1"
-              className="w-full object-fill  "
-            />
-          </div>
+       <div className="relative w-full h-56 sm:h-72 md:h-96 mt-6 sm:mt-10 max-w-4xl mx-auto overflow-hidden rounded-xl shadow-lg">
+  {/* Slider Images Container */}
+  <div className="flex transition-transform duration-300 ease-in-out h-full">
+    <img
+      src={urls[img].img}
+      alt="Slide"
+      className="w-full h-full object-cover"
+    />
+  </div>
 
-          {/* Left Button */}
-          {/* Left Button */}
-          {/* Left Button */}
-          <button
-            onClick={() => {
-              if (img === 0) {
-                setImg(3);
-              } else {
-                setImg(img - 1);
-              }
-            }}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-br from-white/70 to-white/50 hover:from-white/90 hover:to-white/70 text-gray-800 rounded-full p-4 shadow-xl backdrop-blur-md transition duration-300 flex items-center justify-center hover:scale-110"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
+  {/* Left Button */}
+  <button
+    onClick={() => {
+      if (img === 0) {
+        setImg(3);
+      } else {
+        setImg(img - 1);
+      }
+    }}
+    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-gradient-to-br from-white/70 to-white/50 hover:from-white/90 hover:to-white/70 text-gray-800 rounded-full p-2 sm:p-3 md:p-4 shadow-xl backdrop-blur-md transition duration-300 flex items-center justify-center hover:scale-110"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4 sm:h-5 sm:w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
 
-          {/* Right Button */}
-          <button
-            onClick={() => {
-              if (img === 3) {
-                setImg(0);
-              } else {
-                setImg(img + 1);
-              }
-            }}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-br from-white/70 to-white/50 hover:from-white/90 hover:to-white/70 text-gray-800 rounded-full p-4 shadow-xl backdrop-blur-md transition duration-300 flex items-center justify-center hover:scale-110"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-        </div>
+  {/* Right Button */}
+  <button
+    onClick={() => {
+      if (img === 3) {
+        setImg(0);
+      } else {
+        setImg(img + 1);
+      }
+    }}
+    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 bg-gradient-to-br from-white/70 to-white/50 hover:from-white/90 hover:to-white/70 text-gray-800 rounded-full p-2 sm:p-3 md:p-4 shadow-xl backdrop-blur-md transition duration-300 flex items-center justify-center hover:scale-110"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-4 w-4 sm:h-5 sm:w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</div>
 
         <div className="max-w-7xl mx-auto p-6">
           {/* Page Header */}
