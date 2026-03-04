@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import useFetch from "../Hooks/usefetch";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import supabase from "../config/SupaBaseClient";

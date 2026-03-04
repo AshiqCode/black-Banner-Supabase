@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { toast } from "react-toastify";
 import supabase from "../../config/SupaBaseClient";
 const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
@@ -24,7 +24,7 @@ const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
       orderId: currenorderId,
     };
 
-    const { data, error } = await supabase
+    const { data} = await supabase
       .from("reviews")
       .insert({
         userId: user,
@@ -32,7 +32,10 @@ const ReviewPupUp = ({ setReviewPupUp, currentProductId, currenorderId }) => {
         reviewMessage: reviewMessage,
         productid: currentProductId,
       });
-
+if(data){
+  console.log(data);
+  
+}
     setCurretData((prev) => {});
 
     var newProduct = {

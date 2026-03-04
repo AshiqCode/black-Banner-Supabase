@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import useFetch from "../../Hooks/usefetch";
-import Loading from "./Loading";
 
 import { toast } from "react-toastify";
-import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
-import { type } from "@testing-library/user-event/dist/type";
 import { useNavigate } from "react-router-dom";
 
 const Admins = () => {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState([]);
-  const [users, setUsers] = useState();
+  const [ setUsers] = useState();
   const [isaddAdmin, setIsaddAdmin] = useState(false);
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");

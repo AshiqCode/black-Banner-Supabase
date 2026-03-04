@@ -10,7 +10,7 @@ const OrderDetails = ({
   total,
   currenorderId,
 }) => {
-  const [orderedProducts, setOrderedProducts] = useState([]);
+  // const [orderedProducts, setOrderedProducts] = useState([]);
   const [reviewPupUp, setReviewPupUp] = useState(false);
   const [currentProductId, setcurrentProductId] = useState("");
   const [currentOrder, setCurrentOrder] = useState(null);
@@ -51,7 +51,7 @@ const OrderDetails = ({
       setCurrentOrder(orderId);
     };
     fetchOrderProducts();
-  }, [user]);
+  }, [user,currenorderId]);
 
   useEffect(() => {
     const fetchOrderProducts = async () => {
@@ -70,7 +70,7 @@ const OrderDetails = ({
       setProductIds(productId.map((item) => item.product_id));
     };
     fetchOrderProducts();
-  }, [currentOrder]);
+  }, [currentOrder,currenorderId,user]);
 
   useEffect(() => {
     const fetchOrderProducts = async () => {

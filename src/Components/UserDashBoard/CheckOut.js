@@ -1,5 +1,4 @@
-import { useEffect, useId, useState } from "react";
-import useFetch from "../../Hooks/usefetch";
+import { useEffect,  useState } from "react";
 import Loading from "../DashBoard/Loading";
 import NavBar from "./NavBar";
 import { toast } from "react-toastify";
@@ -7,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import supabase from "../../config/SupaBaseClient";
 
 const Checkout = () => {
-  const [cartProducts, setCartProducts] = useState([]);
-  const [orderedProducts, setOrderedProducts] = useState([]);
+  const [cartProducts] = useState([]);
+  // const [orderedProducts, setOrderedProducts] = useState([]);
   const [products, setProducts] = useState(null);
   const [productIds, setProductIds] = useState(null);
   const [orderInfo, setOrderInfo] = useState(null);
@@ -126,15 +125,15 @@ const productsWithQuantity = products?.map((product) => {
   const shipping = products?.length * 4;
   const totalPrice = subTotal + shipping + cartProducts.length * 2;
 
-  const orderData = {
-    products: orderedProducts,
-    subtotal: subTotal,
-    shipping: shipping,
-    total: totalPrice,
-    deliveryAddress: userProvince + userCity + userStreet + userAddress,
-    status: "pending",
-    userId: userId,
-  };
+  // const orderData = {
+  //   products: orderedProducts,
+  //   subtotal: subTotal,
+  //   shipping: shipping,
+  //   total: totalPrice,
+  //   deliveryAddress: userProvince + userCity + userStreet + userAddress,
+  //   status: "pending",
+  //   userId: userId,
+  // };
 
   const delivery_address = userProvince + userCity + userStreet + userAddress;
   const placeOrder = async () => {
@@ -162,7 +161,7 @@ const productsWithQuantity = products?.map((product) => {
     //   body: JSON.stringify(user),
     // });
 
-    const { data: orderInsertData, error: orderError } = await supabase
+    const { data: orderInsertData, } = await supabase
       .from("orders")
       .insert({
         userId,
@@ -181,16 +180,24 @@ const productsWithQuantity = products?.map((product) => {
       product_id: item.productId,
     }));
 
-    const { data: orderProductData, error: productError } = await supabase
+    const { data: orderProductData  } = await supabase
       .from("order_products")
       .insert(orderProducts)
       .select();
 
+      if(orderProductData){
+        console.log(orderProductData);
+        
+      }
     navigate("/ViewOrder");
-    const { data, error } = await supabase
+    const { data} = await supabase
       .from("cart")
       .delete()
       .eq("userId", userId);
+      if(data){
+        console.log(data);
+        
+      }
   };
   console.log(userId);
 

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import useFetch from "../../Hooks/usefetch";
 import Loading from "./Loading";
 import DeletePopUp from "./DeletePopUp";
-import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +40,11 @@ const UsersOverView = () => {
   // }, [data]);
 
   const deletehandle = async () => {
-    const { data, error } = await supabase.from("users").delete().eq("id", id);
+    const { data} = await supabase.from("users").delete().eq("id", id);
+    if(data){
+      console.log(data);
+      
+    }
     setUsersData(
       usersData.filter((e) => {
         return e.id !== id;

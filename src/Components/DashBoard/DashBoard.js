@@ -1,11 +1,6 @@
 import { useState } from "react";
 import OverView from "./OverView";
-import AddProduct from "./AddProduct";
-import UsersOverView from "./UsersOverView";
-import Products from "./Products";
-import ViewOrders from "./ViewOrders";
-import Admins from "./Admins";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();

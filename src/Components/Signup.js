@@ -40,12 +40,16 @@ const Login = () => {
       // };
       // setData((prev) => [...prev, user]);
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("users")
         .insert({ name, email: Email, password: Password })
         .select()
         .single();
       navigate("/Login");
+      if(data){
+        console.log(data);
+        
+      }
     } else {
       toast.error("Fill All Inputs");
     }

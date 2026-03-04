@@ -31,7 +31,7 @@ const ViewOrders = () => {
       }
     };
     datafetch();
-  }, []);
+  }, [user]);
 
   const handleViewDetails = (
     productId,

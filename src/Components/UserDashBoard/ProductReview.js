@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import supabase from "../../config/SupaBaseClient";
 
 const ProductReview = ({ ProductId }) => {
-  const [data, setData] = useState({});
-  const [Ispending, setIspending] = useState(false);
-  const [error, setError] = useState(false);
+  // const [data, setData] = useState({});
+  // const [Ispending, setIspending] = useState(false);
+  // const [error, setError] = useState(false);
   const [reviews, setReviews] = useState(null);
 
-  const [usersIds, setUsersIds] = useState([]);
-  const [userData, setUserData] = useState([]);
+  // const [usersIds, setUsersIds] = useState([]);
+  // const [userData, setUserData] = useState([]);
   // useEffect(() => {
   //   fetch(`http://localhost:3000/products/${ProductId}`)
   //     .then((res) => res.json())
@@ -46,7 +46,7 @@ const ProductReview = ({ ProductId }) => {
     const fetchdata = async () => {
       console.log("data");
 
-      const { data: review, error } = await supabase
+      const { data: review} = await supabase
         .from("reviews")
         .select(`
           id,
@@ -62,7 +62,7 @@ const ProductReview = ({ ProductId }) => {
       setReviews(review);
     };
     fetchdata();
-  }, []);
+  }, [ProductId]);
 
   // const reviews = data.reviews;
   // console.log(data);

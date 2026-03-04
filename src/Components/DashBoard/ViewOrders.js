@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
-import useFetch from "../../Hooks/usefetch";
-import { toast } from "react-toastify";
-import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
 import { useNavigate } from "react-router-dom";
 const ViewOrders = () => {
   // const { data, setData, Ispending } = useFetch("http://localhost:3000/orders");
 
-  const [orderedProducts, setOrderedProducts] = useState([]);
-  const [status, setStatus] = useState("");
-  const [data, setData] = useState([]);
+  // const [orderedProducts, setOrderedProducts] = useState([]);
+  // const [status, setStatus] = useState("");
+  // const [data, setData] = useState([]);
   const [orders, setOrders] = useState(null);
   const navigate = useNavigate();
   const statusOptions = [
@@ -69,7 +66,7 @@ const ViewOrders = () => {
 
   const statusHandle = async (statusvaluse, orderId) => {
     console.log(statusvaluse, orderId);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("orders")
       .update({ status: statusvaluse })
       .eq("id", orderId);
@@ -79,6 +76,10 @@ const ViewOrders = () => {
       )
     );
 
+    if(data){
+      console.log(data);
+      
+    }
     // fetch(`http://localhost:3000/orders/${orderId}`, {
     //   method: "PATCH",
     //   body: JSON.stringify({ status: statusvaluse }),

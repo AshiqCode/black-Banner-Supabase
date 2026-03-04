@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Loading from "./Loading";
 import { toast } from "react-toastify";
 import DeletePopUp from "./DeletePopUp";
-import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import supabase from "../../config/SupaBaseClient";
 import { useNavigate } from "react-router-dom";
