@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Admins = () => {
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState([]);
-  const [ setUsers] = useState();
+  const [ users,setUsers] = useState();
   const [isaddAdmin, setIsaddAdmin] = useState(false);
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
@@ -20,6 +20,7 @@ const Admins = () => {
   const currentAdmins = adminData.slice(startIndex, endIndex);
   const totalPages = Math.ceil(adminData.length / pageSize);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+console.log(users);
 
   useEffect(() => {
     const fetchData = async () => {
