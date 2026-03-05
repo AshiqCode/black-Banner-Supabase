@@ -13,6 +13,8 @@ import Admins from "./Components/DashBoard/Admins";
 import UsersOverView from "./Components/DashBoard/UsersOverView";
 import AdminProducts from "./Components/DashBoard/Products";
 import AdminViewOrders from "./Components/DashBoard/ViewOrders";
+import AboutUs from "./Components/UserDashBoard/AboutUs";
+import ContactUs from "./Components/UserDashBoard/ContactUs";
 
 function App() {
   return (
@@ -32,6 +34,9 @@ function App() {
         <Route path="/dashboard/users" element={<UsersOverView />} />
         <Route path="/dashboard/products" element={<AdminProducts />} />
         <Route path="/dashboard/orders" element={<AdminViewOrders />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+
       </Routes>
     </BrowserRouter>
   );
