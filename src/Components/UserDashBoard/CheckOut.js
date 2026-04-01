@@ -296,7 +296,7 @@ const productsWithQuantity = products?.map((product) => {
                           </div>
 
                           <p className="text-base font-bold text-gray-900 mt-2">
-                            ${product.price}
+                            RS {product.price}
                           </p>
                         </div>
                       </div>
@@ -315,18 +315,18 @@ const productsWithQuantity = products?.map((product) => {
               <div className="space-y-3 text-sm text-gray-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>{subTotal} $</span>
+                  <span>{subTotal} RS </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>{shipping} $</span>
+                  <span>{shipping} RS </span>
                 </div>
 
                 <hr className="my-4" />
 
                 <div className="flex justify-between text-base font-semibold text-gray-900">
                   <span>Total</span>
-                  <span>{totalPrice} $</span>
+                  <span>{totalPrice} RS </span>
                 </div>
               </div>
 

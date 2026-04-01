@@ -150,7 +150,7 @@ const ProductDetails = () => {
               </span>
 
               <p className="text-xl sm:text-2xl font-bold text-gray-900">
-                ${data.price}
+                RS {data.price}
               </p>
 
               <p className="text-gray-600 leading-relaxed text-sm sm:text-base break-words">

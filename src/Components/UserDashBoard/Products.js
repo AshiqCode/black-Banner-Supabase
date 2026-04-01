@@ -138,7 +138,7 @@ const Products = () => {
                       </h3>
 
                       <p className="text-yellow-600 font-semibold text-lg">
-                        ${product.price}
+                        RS {product.price}
                       </p>
 
                       <span className="inline-block w-fit text-xs font-medium text-red-600 px-3 py-1 rounded-full">

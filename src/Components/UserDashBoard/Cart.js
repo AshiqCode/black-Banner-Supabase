@@ -247,7 +247,7 @@ const Cart = () => {
 
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-lg font-bold text-gray-900">
-                      ${product.price}
+                      RS {product.price}
                     </span>
 
                     {/* Actions */}
