@@ -1,45 +1,51 @@
 <h1 align="center">
-  <img src="https://capsule-render.vercel.app/api?type=soft&color=0D1117&height=200&section=header&text=Black%20Banner&fontSize=80&fontColor=00E6FE&animation=fadeIn" />
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=0D1117&height=220&section=header&text=Black%20Banner%20Store&fontSize=75&fontColor=00E6FE&animation=twinkling" />
 </h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Maintained%3F-yes-00E6FE?style=for-the-badge" />
-  <img src="https://img.shields.io/github/stars/AshiqCode/black-Banner-Supabase?style=for-the-badge&color=00E6FE" />
-  <img src="https://img.shields.io/badge/Backend-Supabase-green?style=for-the-badge&logo=supabase" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
 </p>
 
 ---
 
-### 🖼️ Project Preview
-<p align="center">
-  <img src="https://repository-images.githubusercontent.com/584343135/20340380-776a-11ed-9c76-563b78918239" width="800" alt="Project Mockup" style="border-radius: 10px; border: 1px solid #00E6FE;"/>
-  <br>
-  <i>"A sophisticated dark-interface banner management system powered by Supabase."</i>
-</p>
+### 📦 Modern E-Commerce Solution
+A premium, dark-themed shopping experience. This store features a seamless flow from product discovery to checkout, utilizing **Supabase** for real-time inventory and user data management.
+
+### ✨ Key Features
+- 🛒 **Dynamic Cart System:** Persistent shopping cart with real-time price calculation.
+- 🔐 **User Authentication:** Secure login/signup powered by Supabase Auth.
+- 💳 **Product Management:** Instant filtering, searching, and category sorting.
+- 📱 **Fully Responsive:** Optimized for mobile, tablet, and desktop browsing.
+- ⚡ **Real-time Inventory:** Syncs stock levels instantly across all clients.
 
 ---
 
-### 🌟 Key Features
-- 🌑 **Dark Aesthetics:** Fully optimized for high-contrast dark mode environments.
-- ⚡ **Real-time Updates:** Powered by **Supabase Realtime** for instant UI changes.
-- 🔐 **Secure Auth:** Robust user authentication and row-level security (RLS).
-- 🚀 **Lightning Fast:** Built with high-performance React/Next.js architecture.
+### 🎨 Visual Preview
+<div align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueW9idm96eG16eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qgQUggAC3Pfv687qPC/giphy.gif" width="600" style="border: 2px solid #00E6FE; border-radius: 15px;" />
+  <p><i>Replace this GIF with a screen recording of your Store's checkout flow!</i></p>
+</div>
 
 ---
 
-### 🛠️ Tech Stack
-<p align="left">
-  <img src="https://skillicons.dev/icons?i=react,nextjs,supabase,tailwind,ts,vercel" />
-</p>
+### 🛠️ Technical Architecture
 
-- **Frontend:** React / Next.js with Tailwind CSS for styling.
-- **Backend:** Supabase (PostgreSQL, Auth, and Storage).
-- **Deployment:** Vercel for seamless CI/CD.
+| Feature | Technology | Usage |
+| :--- | :--- | :--- |
+| **Frontend** | React.js | UI Components & State Management |
+| **Styling** | Tailwind CSS | Utility-first responsive design |
+| **Database** | Supabase (PostgreSQL) | Product storage & Order history |
+| **Auth** | Supabase GoTrue | Social & Email authentication |
+| **Storage** | Supabase Storage | High-res product image hosting |
 
 ---
 
-### ⚙️ Quick Installation
+### 🚀 Getting Started
 
-1. **Clone the repo**
+1. **Clone & Install**
    ```bash
    git clone [https://github.com/AshiqCode/black-Banner-Supabase.git](https://github.com/AshiqCode/black-Banner-Supabase.git)
+   cd black-Banner-Supabase
+   npm install
