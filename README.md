@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+<h1 align="center">
+  <img src="https://capsule-render.vercel.app/api?type=soft&color=0D1117&height=200&section=header&text=Black%20Banner&fontSize=80&fontColor=00E6FE&animation=fadeIn" />
+</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="https://img.shields.io/badge/Maintained%3F-yes-00E6FE?style=for-the-badge" />
+  <img src="https://img.shields.io/github/stars/AshiqCode/black-Banner-Supabase?style=for-the-badge&color=00E6FE" />
+  <img src="https://img.shields.io/badge/Backend-Supabase-green?style=for-the-badge&logo=supabase" />
+</p>
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+### 🖼️ Project Preview
+<p align="center">
+  <img src="https://repository-images.githubusercontent.com/584343135/20340380-776a-11ed-9c76-563b78918239" width="800" alt="Project Mockup" style="border-radius: 10px; border: 1px solid #00E6FE;"/>
+  <br>
+  <i>"A sophisticated dark-interface banner management system powered by Supabase."</i>
+</p>
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🌟 Key Features
+- 🌑 **Dark Aesthetics:** Fully optimized for high-contrast dark mode environments.
+- ⚡ **Real-time Updates:** Powered by **Supabase Realtime** for instant UI changes.
+- 🔐 **Secure Auth:** Robust user authentication and row-level security (RLS).
+- 🚀 **Lightning Fast:** Built with high-performance React/Next.js architecture.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+### 🛠️ Tech Stack
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=react,nextjs,supabase,tailwind,ts,vercel" />
+</p>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Frontend:** React / Next.js with Tailwind CSS for styling.
+- **Backend:** Supabase (PostgreSQL, Auth, and Storage).
+- **Deployment:** Vercel for seamless CI/CD.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### ⚙️ Quick Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. **Clone the repo**
+   ```bash
+   git clone [https://github.com/AshiqCode/black-Banner-Supabase.git](https://github.com/AshiqCode/black-Banner-Supabase.git)
