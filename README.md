@@ -26,9 +26,11 @@ A premium, dark-themed shopping experience. This store features a seamless flow 
 <div align="center">
   <img width="1920" height="972" alt="Capture" src="https://github.com/user-attachments/assets/e1b49ba8-b5e1-49f9-a346-6d79f99e0eda" />
 </div>
+
+
 ### 🎨 Project Preview
 
-<div align="center">
+<div>
   <a href="https://black-banner.vercel.app" target="_blank">
     https://black-banner.vercel.app
   </a>
