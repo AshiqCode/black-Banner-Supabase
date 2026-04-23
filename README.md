@@ -24,8 +24,8 @@ A premium, dark-themed shopping experience. This store features a seamless flow 
 
 ### 🎨 Visual Preview
 <div align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueW9idm96eG16eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6eGZ6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qgQUggAC3Pfv687qPC/giphy.gif" width="600" style="border: 2px solid #00E6FE; border-radius: 15px;" />
-  <p><i>Replace this GIF with a screen recording of your Store's checkout flow!</i></p>
+  <img width="1920" height="972" alt="Capture" src="https://github.com/user-attachments/assets/e1b49ba8-b5e1-49f9-a346-6d79f99e0eda" />
+
 </div>
 
 ---
